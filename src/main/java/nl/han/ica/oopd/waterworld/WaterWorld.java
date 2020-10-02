@@ -25,7 +25,7 @@ public class WaterWorld extends GameEngine {
     private int bubblesPopped;
     private IPersistence persistence;
     private Player player;
-    
+
     public static void main(String[] args) {
         String[] processingArgs = {"nl.han.ica.oopd.waterworld.WaterWorld"};
         WaterWorld mySketch = new WaterWorld();
@@ -94,7 +94,6 @@ public class WaterWorld extends GameEngine {
         backgroundSound.loop(-1);
         bubblePopSound = new Sound(this, "src/main/java/nl/han/ica/oopd/waterworld/media/pop.mp3");
     }
-
 
     /**
      * Maakt de spelobjecten aan
