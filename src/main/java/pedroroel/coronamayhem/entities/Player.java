@@ -1,4 +1,4 @@
-package pedroroel.coronamayhem;
+package pedroroel.coronamayhem.entities;
 
 import nl.han.ica.oopg.collision.CollidedTile;
 import nl.han.ica.oopg.collision.CollisionSide;
@@ -6,13 +6,14 @@ import nl.han.ica.oopg.collision.ICollidableWithTiles;
 import nl.han.ica.oopg.exceptions.TileNotFoundException;
 import nl.han.ica.oopg.objects.AnimatedSpriteObject;
 import nl.han.ica.oopg.objects.Sprite;
+import pedroroel.coronamayhem.CoronaMayhem;
 import pedroroel.coronamayhem.tiles.BoardsTile;
 import processing.core.PVector;
 import java.util.List;
 
 public class Player extends AnimatedSpriteObject implements ICollidableWithTiles {
-    final int size = 25;
     private final CoronaMayhem world;
+    final int size = 25;
 
     public Player(CoronaMayhem world) {
         super(new Sprite("src/main/java/pedroroel/coronamayhem/assets/images/doctor_mask.png"), 2);

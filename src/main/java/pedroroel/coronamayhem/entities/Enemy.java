@@ -1,7 +1,8 @@
-package pedroroel.coronamayhem;
+package pedroroel.coronamayhem.entities;
 
 import nl.han.ica.oopg.objects.AnimatedSpriteObject;
 import nl.han.ica.oopg.objects.Sprite;
+import pedroroel.coronamayhem.CoronaMayhem;
 
 public class Enemy extends AnimatedSpriteObject {
     private CoronaMayhem world;

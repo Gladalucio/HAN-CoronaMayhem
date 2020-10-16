@@ -9,16 +9,12 @@ import nl.han.ica.oopg.sound.Sound;
 import nl.han.ica.oopg.tile.TileMap;
 import nl.han.ica.oopg.tile.TileType;
 import nl.han.ica.oopg.view.View;
+import pedroroel.coronamayhem.entities.Enemy;
+import pedroroel.coronamayhem.entities.Player;
 import pedroroel.coronamayhem.tiles.BoardsTile;
 import processing.core.PApplet;
 
 public class CoronaMayhem extends GameEngine {
-    private Sound backgroundSound;
-    private Sound bubblePopSound;
-    private TextObject dashboardText;
-    private BubbleSpawner bubbleSpawner;
-    private int bubblesPopped;
-    private IPersistence persistence;
     private Player player;
 
     public static void main(String[] args) {
@@ -33,15 +29,15 @@ public class CoronaMayhem extends GameEngine {
         int worldWidth = 1200;
         int worldHeight = 900;
 
-//        initializeSound();
-        createDashboard(worldWidth, 100);
         initializeTileMap();
-        initializePersistence();
-
         createObjects();
-//        createBubbleSpawner();
 
         createViewWithoutViewport(worldWidth, worldHeight);
+    }
+
+    @Override
+    public void update() {
+
     }
 
     private void createViewWithoutViewport(int screenWidth, int screenHeight) {
@@ -52,37 +48,11 @@ public class CoronaMayhem extends GameEngine {
         size(screenWidth, screenHeight);
     }
 
-    private void initializeSound() {
-        backgroundSound = new Sound(this, "src/main/java/pedroroel/coronamayhem/media/waterworld.mp3");
-        backgroundSound.loop(-1);
-        bubblePopSound = new Sound(this, "src/main/java/pedroroel/coronamayhem/media/pop.mp3");
-    }
-
     private void createObjects() {
         player = new Player(this);
         addGameObject(player, 590, 725);
-        Enemy sf = new Enemy(this);
-        addGameObject(sf, 590, 220);
-    }
-
-    public void createBubbleSpawner() {
-        bubbleSpawner = new BubbleSpawner(this, bubblePopSound, 2);
-    }
-
-    private void createDashboard(int dashboardWidth, int dashboardHeight) {
-        Dashboard dashboard = new Dashboard(0, 0, dashboardWidth, dashboardHeight);
-        dashboardText = new TextObject("");
-        dashboard.addGameObject(dashboardText);
-        addDashboard(dashboard);
-    }
-
-    /** File persistence */
-    private void initializePersistence() {
-        persistence = new FilePersistence("main/java/pedroroel/coronamayhem/media/bubblesPopped.txt");
-        if (persistence.fileExists()) {
-            bubblesPopped = Integer.parseInt(persistence.loadDataString());
-            refreshDashboardText();
-        }
+        Enemy enemy = new Enemy(this);
+        addGameObject(enemy, 590, 220);
     }
 
     private void initializeTileMap() {
@@ -112,19 +82,5 @@ public class CoronaMayhem extends GameEngine {
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
         };
         tileMap = new TileMap(tileSize, tileTypes, tilesMap);
-    }
-
-    @Override
-    public void update() {
-    }
-
-    private void refreshDashboardText() {
-        dashboardText.setText("Bubbles popped: " + bubblesPopped);
-    }
-
-    public void increaseBubblesPopped() {
-        bubblesPopped++;
-        persistence.saveData(Integer.toString(bubblesPopped));
-        refreshDashboardText();
     }
 }
