@@ -1,13 +1,12 @@
-package nl.han.ica.oopd.waterworld;
+package pedroroel.coronamario;
 
-import nl.han.ica.oopd.waterworld.tiles.BoardsTile;
 import nl.han.ica.oopg.collision.CollidedTile;
 import nl.han.ica.oopg.collision.CollisionSide;
 import nl.han.ica.oopg.collision.ICollidableWithTiles;
 import nl.han.ica.oopg.exceptions.TileNotFoundException;
 import nl.han.ica.oopg.objects.AnimatedSpriteObject;
 import nl.han.ica.oopg.objects.Sprite;
-import pedroroel.coronamario.CoronaMario;
+import pedroroel.coronamario.tiles.BoardsTile;
 import processing.core.PVector;
 
 import java.util.List;
@@ -20,15 +19,15 @@ import java.util.List;
 public class Player extends AnimatedSpriteObject implements ICollidableWithTiles {
 
     final int size = 25;
-    private final WaterWorld world;
+    private final CoronaMario world;
 
     /**
      * Constructor
      *
      * @param world Referentie naar de wereld
      */
-    public Player(WaterWorld world) {
-        super(new Sprite("src/main/java/nl/han/ica/oopd/waterworld/media/player.png"), 2);
+    public Player(CoronaMario world) {
+        super(new Sprite("src/main/java/pedroroel/coronamario/media/player.png"), 2);
         this.world = world;
         setCurrentFrameIndex(1);
         setFriction(0.05f);
