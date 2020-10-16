@@ -14,10 +14,10 @@ import pedroroel.coronamario.tiles.BoardsTile;
 import processing.core.PApplet;
 
 /**
- * @author Ralph Niels
+ * @author Waterworld: Ralph Niels
+ * @author CoronaMario: Pedro van Douveren, Roel Stevens
  */
 public class CoronaMario extends GameEngine {
-
     private Sound backgroundSound;
     private Sound bubblePopSound;
     private TextObject dashboardText;
@@ -27,7 +27,7 @@ public class CoronaMario extends GameEngine {
     private Player player;
 
     public static void main(String[] args) {
-        String[] processingArgs = {"pedroroel.waterworld.WaterWorld"};
+        String[] processingArgs = {"pedroroel.coronamario.CoronaMario"};
         CoronaMario mySketch = new CoronaMario();
 
         PApplet.runSketch(processingArgs, mySketch);
@@ -39,7 +39,6 @@ public class CoronaMario extends GameEngine {
      */
     @Override
     public void setupGame() {
-
         int worldWidth = 1204;
         int worldHeight = 903;
 
@@ -78,7 +77,13 @@ public class CoronaMario extends GameEngine {
      * @param zoomFactor   Factor waarmee wordt ingezoomd
      */
     private void createViewWithViewport(int worldWidth, int worldHeight, int screenWidth, int screenHeight, float zoomFactor) {
-        EdgeFollowingViewport viewPort = new EdgeFollowingViewport(player, (int) Math.ceil(screenWidth / zoomFactor), (int) Math.ceil(screenHeight / zoomFactor), 0, 0);
+        EdgeFollowingViewport viewPort =
+                new EdgeFollowingViewport(
+                        player,
+                        (int) Math.ceil(screenWidth / zoomFactor),
+                        (int) Math.ceil(screenHeight / zoomFactor),
+                        0,
+                        0);
         viewPort.setTolerance(50, 50, 50, 50);
         View view = new View(viewPort, worldWidth, worldHeight);
         setView(view);
@@ -134,7 +139,7 @@ public class CoronaMario extends GameEngine {
         persistence = new FilePersistence("main/java/pedroroel/coronamario/media/bubblesPopped.txt");
         if (persistence.fileExists()) {
             bubblesPopped = Integer.parseInt(persistence.loadDataString());
-            refreshDasboardText();
+            refreshDashboardText();
         }
     }
 
@@ -142,27 +147,30 @@ public class CoronaMario extends GameEngine {
      * Initialiseert de tilemap
      */
     private void initializeTileMap() {
-        /* TILES */
         Sprite boardsSprite = new Sprite("src/main/java/pedroroel/coronamario/media/boards-tile.jpg");
         TileType<BoardsTile> boardTileType = new TileType<>(BoardsTile.class, boardsSprite);
 
         TileType[] tileTypes = {boardTileType};
         int tileSize = 50;
-        int tilesMap[][] = {
-                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                {-1, -1, -1, 0, 0, 0, 0, -1, 0, 0},
-                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
+        int tilesMap[][] = { // x = 24, y = 18. backgroundsize should be 1200x900
+                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+                {0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0}, // 0 = 6+6, -1 = 12
+                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+                {-1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1}, // 0 = 8, -1 = 16
+                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+                {0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0}, // 0 = 4+4, -1 = 16
+                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+                {0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0}, // 0 = 8+8, -1 = 8
+                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
         };
         tileMap = new TileMap(tileSize, tileTypes, tilesMap);
     }
@@ -174,7 +182,7 @@ public class CoronaMario extends GameEngine {
     /**
      * Vernieuwt het dashboard
      */
-    private void refreshDasboardText() {
+    private void refreshDashboardText() {
         dashboardText.setText("Bubbles popped: " + bubblesPopped);
     }
 
@@ -185,6 +193,6 @@ public class CoronaMario extends GameEngine {
     public void increaseBubblesPopped() {
         bubblesPopped++;
         persistence.saveData(Integer.toString(bubblesPopped));
-        refreshDasboardText();
+        refreshDashboardText();
     }
 }

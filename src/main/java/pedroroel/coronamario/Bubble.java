@@ -12,7 +12,6 @@ import java.util.List;
  * Bel-klasse
  */
 public class Bubble extends GameObject implements ICollidableWithGameObjects {
-
     private final Sound popSound;
     private CoronaMario world;
     private int bubbleSize;

@@ -12,7 +12,6 @@ import java.util.Random;
  * snelheid.
  */
 public class BubbleSpawner implements IAlarmListener {
-
     private float bubblesPerSecond;
     private Random random;
     private CoronaMario world;

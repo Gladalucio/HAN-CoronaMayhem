@@ -17,7 +17,6 @@ import java.util.List;
  * De spelerklasse (het paarse visje)
  */
 public class Player extends AnimatedSpriteObject implements ICollidableWithTiles {
-
     final int size = 25;
     private final CoronaMario world;
 

@@ -9,7 +9,6 @@ import nl.han.ica.oopg.objects.SpriteObject;
  * door de wereld beweegt
  */
 public class Swordfish extends SpriteObject {
-
     private CoronaMario world;
 
     /**
