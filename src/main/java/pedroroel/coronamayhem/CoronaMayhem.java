@@ -50,6 +50,7 @@ public class CoronaMayhem extends GameEngine {
         addGameObject(player, 590, 725);
         Enemy enemy = new Enemy(this, Enemy.Color.Yellow);
         addGameObject(enemy, 590, 220);
+
     }
 
     private void initializeTileMap() {

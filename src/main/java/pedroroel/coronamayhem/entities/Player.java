@@ -7,10 +7,9 @@ public class Player extends Person {
     final int size = 25;
 
     public Player(CoronaMayhem world) {
-        super(new Sprite("src/main/java/pedroroel/coronamayhem/assets/images/doctor_mask.png"), 2);
-        this.world = world;
+        super(world, new Sprite("src/main/java/pedroroel/coronamayhem/assets/images/doctor_mask.png"));
         setCurrentFrameIndex(1);
-        setFriction(0.05f);
+//        setFriction(0.1f);
     }
 
     @Override
@@ -35,7 +34,6 @@ public class Player extends Person {
 
     @Override
     public void keyPressed(int keyCode, char key) {
-        final int speed = 5;
         if (keyCode == world.LEFT) {
             setDirectionSpeed(270, speed);
             setCurrentFrameIndex(0);
