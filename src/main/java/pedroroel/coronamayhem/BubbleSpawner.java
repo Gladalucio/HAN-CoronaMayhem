@@ -1,4 +1,4 @@
-package pedroroel.coronamario;
+package pedroroel.coronamayhem;
 
 import nl.han.ica.oopg.alarm.Alarm;
 import nl.han.ica.oopg.alarm.IAlarmListener;
@@ -14,7 +14,7 @@ import java.util.Random;
 public class BubbleSpawner implements IAlarmListener {
     private float bubblesPerSecond;
     private Random random;
-    private CoronaMario world;
+    private CoronaMayhem world;
     private Sound popSound;
 
     /**
@@ -24,7 +24,7 @@ public class BubbleSpawner implements IAlarmListener {
      * @param popSound         Geluid dat moet klinken als een bel knapt
      * @param bubblesPerSecond Aantal bellen dat per seconden gemaakt moet worden
      */
-    public BubbleSpawner(CoronaMario world, Sound popSound, float bubblesPerSecond) {
+    public BubbleSpawner(CoronaMayhem world, Sound popSound, float bubblesPerSecond) {
         this.bubblesPerSecond = bubblesPerSecond;
         this.world = world;
         this.popSound = popSound;

@@ -7,7 +7,6 @@ import nl.han.ica.oopg.collision.ICollidableWithTiles;
 import nl.han.ica.oopg.exceptions.TileNotFoundException;
 import nl.han.ica.oopg.objects.AnimatedSpriteObject;
 import nl.han.ica.oopg.objects.Sprite;
-import pedroroel.coronamario.CoronaMario;
 import processing.core.PVector;
 
 import java.util.List;

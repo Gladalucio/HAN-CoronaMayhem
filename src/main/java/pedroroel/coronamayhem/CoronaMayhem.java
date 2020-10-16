@@ -1,4 +1,4 @@
-package pedroroel.coronamario;
+package pedroroel.coronamayhem;
 
 import nl.han.ica.oopg.dashboard.Dashboard;
 import nl.han.ica.oopg.engine.GameEngine;
@@ -10,14 +10,14 @@ import nl.han.ica.oopg.tile.TileMap;
 import nl.han.ica.oopg.tile.TileType;
 import nl.han.ica.oopg.view.EdgeFollowingViewport;
 import nl.han.ica.oopg.view.View;
-import pedroroel.coronamario.tiles.BoardsTile;
+import pedroroel.coronamayhem.tiles.BoardsTile;
 import processing.core.PApplet;
 
 /**
  * @author Waterworld: Ralph Niels
- * @author CoronaMario: Pedro van Douveren, Roel Stevens
+ * @author coronamayhem: Pedro van Douveren, Roel Stevens
  */
-public class CoronaMario extends GameEngine {
+public class CoronaMayhem extends GameEngine {
     private Sound backgroundSound;
     private Sound bubblePopSound;
     private TextObject dashboardText;
@@ -27,8 +27,8 @@ public class CoronaMario extends GameEngine {
     private Player player;
 
     public static void main(String[] args) {
-        String[] processingArgs = {"pedroroel.coronamario.CoronaMario"};
-        CoronaMario mySketch = new CoronaMario();
+        String[] processingArgs = {"CoronaMayhem"};
+        CoronaMayhem mySketch = new CoronaMayhem();
 
         PApplet.runSketch(processingArgs, mySketch);
     }
@@ -61,7 +61,7 @@ public class CoronaMario extends GameEngine {
      */
     private void createViewWithoutViewport(int screenWidth, int screenHeight) {
         View view = new View(screenWidth, screenHeight);
-        view.setBackground(loadImage("src/main/java/pedroroel/coronamario/media/background.jpg"));
+        view.setBackground(loadImage("src/main/java/pedroroel/coronamayhem/media/background.jpg"));
 
         setView(view);
         size(screenWidth, screenHeight);
@@ -88,16 +88,16 @@ public class CoronaMario extends GameEngine {
         View view = new View(viewPort, worldWidth, worldHeight);
         setView(view);
         size(screenWidth, screenHeight);
-        view.setBackground(loadImage("src/main/java/pedroroel/coronamario/media/background.jpg"));
+        view.setBackground(loadImage("src/main/java/pedroroel/coronamayhem/media/background.jpg"));
     }
 
     /**
      * Initialiseert geluid
      */
     private void initializeSound() {
-        backgroundSound = new Sound(this, "src/main/java/pedroroel/coronamario/media/waterworld.mp3");
+        backgroundSound = new Sound(this, "src/main/java/pedroroel/coronamayhem/media/waterworld.mp3");
         backgroundSound.loop(-1);
-        bubblePopSound = new Sound(this, "src/main/java/pedroroel/coronamario/media/pop.mp3");
+        bubblePopSound = new Sound(this, "src/main/java/pedroroel/coronamayhem/media/pop.mp3");
     }
 
     /**
@@ -136,7 +136,7 @@ public class CoronaMario extends GameEngine {
      * waarde
      */
     private void initializePersistence() {
-        persistence = new FilePersistence("main/java/pedroroel/coronamario/media/bubblesPopped.txt");
+        persistence = new FilePersistence("main/java/pedroroel/coronamayhem/media/bubblesPopped.txt");
         if (persistence.fileExists()) {
             bubblesPopped = Integer.parseInt(persistence.loadDataString());
             refreshDashboardText();
@@ -147,7 +147,7 @@ public class CoronaMario extends GameEngine {
      * Initialiseert de tilemap
      */
     private void initializeTileMap() {
-        Sprite boardsSprite = new Sprite("src/main/java/pedroroel/coronamario/media/boards-tile.jpg");
+        Sprite boardsSprite = new Sprite("src/main/java/pedroroel/coronamayhem/media/boards-tile.jpg");
         TileType<BoardsTile> boardTileType = new TileType<>(BoardsTile.class, boardsSprite);
 
         TileType[] tileTypes = {boardTileType};

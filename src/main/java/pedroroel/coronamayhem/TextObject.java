@@ -1,4 +1,4 @@
-package pedroroel.coronamario;
+package pedroroel.coronamayhem;
 
 import nl.han.ica.oopg.objects.GameObject;
 import processing.core.PGraphics;

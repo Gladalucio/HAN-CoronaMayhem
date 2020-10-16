@@ -1,4 +1,4 @@
-package pedroroel.coronamario;
+package pedroroel.coronamayhem;
 
 import nl.han.ica.oopg.collision.CollidedTile;
 import nl.han.ica.oopg.collision.CollisionSide;
@@ -6,7 +6,7 @@ import nl.han.ica.oopg.collision.ICollidableWithTiles;
 import nl.han.ica.oopg.exceptions.TileNotFoundException;
 import nl.han.ica.oopg.objects.AnimatedSpriteObject;
 import nl.han.ica.oopg.objects.Sprite;
-import pedroroel.coronamario.tiles.BoardsTile;
+import pedroroel.coronamayhem.tiles.BoardsTile;
 import processing.core.PVector;
 
 import java.util.List;
@@ -18,15 +18,15 @@ import java.util.List;
  */
 public class Player extends AnimatedSpriteObject implements ICollidableWithTiles {
     final int size = 25;
-    private final CoronaMario world;
+    private final CoronaMayhem world;
 
     /**
      * Constructor
      *
      * @param world Referentie naar de wereld
      */
-    public Player(CoronaMario world) {
-        super(new Sprite("src/main/java/pedroroel/coronamario/media/player.png"), 2);
+    public Player(CoronaMayhem world) {
+        super(new Sprite("src/main/java/pedroroel/coronamayhem/media/player.png"), 2);
         this.world = world;
         setCurrentFrameIndex(1);
         setFriction(0.05f);

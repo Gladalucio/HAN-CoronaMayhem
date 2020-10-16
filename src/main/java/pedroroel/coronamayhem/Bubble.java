@@ -1,4 +1,4 @@
-package pedroroel.coronamario;
+package pedroroel.coronamayhem;
 
 import nl.han.ica.oopg.collision.ICollidableWithGameObjects;
 import nl.han.ica.oopg.objects.GameObject;
@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class Bubble extends GameObject implements ICollidableWithGameObjects {
     private final Sound popSound;
-    private CoronaMario world;
+    private CoronaMayhem world;
     private int bubbleSize;
 
     /**
@@ -23,7 +23,7 @@ public class Bubble extends GameObject implements ICollidableWithGameObjects {
      * @param world      Referentie naar de wereld
      * @param popSound   Geluid dat moet klinken als de bel knapt
      */
-    public Bubble(int bubbleSize, CoronaMario world, Sound popSound) {
+    public Bubble(int bubbleSize, CoronaMayhem world, Sound popSound) {
         this.bubbleSize = bubbleSize;
         this.popSound = popSound;
         this.world = world;

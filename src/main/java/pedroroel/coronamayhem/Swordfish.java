@@ -1,4 +1,4 @@
-package pedroroel.coronamario;
+package pedroroel.coronamayhem;
 
 import nl.han.ica.oopg.objects.Sprite;
 import nl.han.ica.oopg.objects.SpriteObject;
@@ -9,15 +9,15 @@ import nl.han.ica.oopg.objects.SpriteObject;
  * door de wereld beweegt
  */
 public class Swordfish extends SpriteObject {
-    private CoronaMario world;
+    private CoronaMayhem world;
 
     /**
      * Constructor
      *
      * @param world Referentie naar de wereld
      */
-    public Swordfish(CoronaMario world) {
-        this(new Sprite("src/main/java/pedroroel/coronamario/media/swordfish.png"));
+    public Swordfish(CoronaMayhem world) {
+        this(new Sprite("src/main/java/pedroroel/coronamayhem/media/swordfish.png"));
         this.world = world;
     }
 
