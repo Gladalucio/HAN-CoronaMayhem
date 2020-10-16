@@ -1,26 +1,25 @@
 package pedroroel.coronamayhem;
 
-import nl.han.ica.oopg.dashboard.Dashboard;
 import nl.han.ica.oopg.engine.GameEngine;
 import nl.han.ica.oopg.objects.Sprite;
-import nl.han.ica.oopg.persistence.FilePersistence;
-import nl.han.ica.oopg.persistence.IPersistence;
-import nl.han.ica.oopg.sound.Sound;
 import nl.han.ica.oopg.tile.TileMap;
 import nl.han.ica.oopg.tile.TileType;
 import nl.han.ica.oopg.view.View;
 import pedroroel.coronamayhem.entities.Enemy;
 import pedroroel.coronamayhem.entities.Player;
-import pedroroel.coronamayhem.tiles.BoardsTile;
+import pedroroel.coronamayhem.tiles.GameTile;
 import processing.core.PApplet;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CoronaMayhem extends GameEngine {
     private Player player;
+    private List<Enemy> enemiesList = new ArrayList<Enemy>();
 
     public static void main(String[] args) {
         String[] processingArgs = {"CoronaMayhem"};
         CoronaMayhem coronaMayhem = new CoronaMayhem();
-
         PApplet.runSketch(processingArgs, coronaMayhem);
     }
 
@@ -36,9 +35,7 @@ public class CoronaMayhem extends GameEngine {
     }
 
     @Override
-    public void update() {
-
-    }
+    public void update() {}
 
     private void createViewWithoutViewport(int screenWidth, int screenHeight) {
         View view = new View(screenWidth, screenHeight);
@@ -51,13 +48,13 @@ public class CoronaMayhem extends GameEngine {
     private void createObjects() {
         player = new Player(this);
         addGameObject(player, 590, 725);
-        Enemy enemy = new Enemy(this);
+        Enemy enemy = new Enemy(this, Enemy.Color.Yellow);
         addGameObject(enemy, 590, 220);
     }
 
     private void initializeTileMap() {
         Sprite boardsSprite = new Sprite("src/main/java/pedroroel/coronamayhem/assets/images/tile.jpg");
-        TileType<BoardsTile> boardTileType = new TileType<>(BoardsTile.class, boardsSprite);
+        TileType<GameTile> boardTileType = new TileType<>(GameTile.class, boardsSprite);
 
         TileType[] tileTypes = {boardTileType};
         int tileSize = 50;
@@ -83,4 +80,5 @@ public class CoronaMayhem extends GameEngine {
         };
         tileMap = new TileMap(tileSize, tileTypes, tilesMap);
     }
+
 }

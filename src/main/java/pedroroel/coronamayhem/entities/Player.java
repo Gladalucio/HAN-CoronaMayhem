@@ -1,18 +1,9 @@
 package pedroroel.coronamayhem.entities;
 
-import nl.han.ica.oopg.collision.CollidedTile;
-import nl.han.ica.oopg.collision.CollisionSide;
-import nl.han.ica.oopg.collision.ICollidableWithTiles;
-import nl.han.ica.oopg.exceptions.TileNotFoundException;
-import nl.han.ica.oopg.objects.AnimatedSpriteObject;
 import nl.han.ica.oopg.objects.Sprite;
 import pedroroel.coronamayhem.CoronaMayhem;
-import pedroroel.coronamayhem.tiles.BoardsTile;
-import processing.core.PVector;
-import java.util.List;
 
-public class Player extends AnimatedSpriteObject implements ICollidableWithTiles {
-    private final CoronaMayhem world;
+public class Player extends Person {
     final int size = 25;
 
     public Player(CoronaMayhem world) {
@@ -40,7 +31,6 @@ public class Player extends AnimatedSpriteObject implements ICollidableWithTiles
             setySpeed(0);
             setY(world.height - size);
         }
-
     }
 
     @Override
@@ -62,32 +52,6 @@ public class Player extends AnimatedSpriteObject implements ICollidableWithTiles
         }
         if (key == ' ') {
             System.out.println("Spatie!");
-        }
-    }
-
-    @Override
-    public void tileCollisionOccurred(List<CollidedTile> collidedTiles) {
-        PVector vector;
-
-        for (CollidedTile ct : collidedTiles) {
-            if (ct.getTile() instanceof BoardsTile) {
-                if (CollisionSide.TOP.equals(ct.getCollisionSide())) {
-                    try {
-                        vector = world.getTileMap().getTilePixelLocation(ct.getTile());
-                        setY(vector.y - getHeight());
-                    } catch (TileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (CollisionSide.RIGHT.equals(ct.getCollisionSide())) {
-                    try {
-                        vector = world.getTileMap().getTilePixelLocation(ct.getTile());
-                        world.getTileMap().setTile((int) vector.x / 50, (int) vector.y / 50, -1);
-                    } catch (TileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
         }
     }
 }
