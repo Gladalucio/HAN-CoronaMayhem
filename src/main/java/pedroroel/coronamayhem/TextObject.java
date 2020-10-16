@@ -3,10 +3,6 @@ package pedroroel.coronamayhem;
 import nl.han.ica.oopg.objects.GameObject;
 import processing.core.PGraphics;
 
-/**
- * @author Ralph Niels
- * Wordt gebruikt om een tekst te kunnen afbeelden
- */
 public class TextObject extends GameObject {
 
     private String text;

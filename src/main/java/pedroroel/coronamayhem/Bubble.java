@@ -4,28 +4,16 @@ import nl.han.ica.oopg.collision.ICollidableWithGameObjects;
 import nl.han.ica.oopg.objects.GameObject;
 import nl.han.ica.oopg.sound.Sound;
 import processing.core.PGraphics;
-
 import java.util.List;
 
-/**
- * @author Ralph Niels
- * Bel-klasse
- */
 public class Bubble extends GameObject implements ICollidableWithGameObjects {
-    private final Sound popSound;
+//    private final Sound popSound;
     private CoronaMayhem world;
     private int bubbleSize;
 
-    /**
-     * Constructor
-     *
-     * @param bubbleSize Afmeting van de bel
-     * @param world      Referentie naar de wereld
-     * @param popSound   Geluid dat moet klinken als de bel knapt
-     */
     public Bubble(int bubbleSize, CoronaMayhem world, Sound popSound) {
         this.bubbleSize = bubbleSize;
-        this.popSound = popSound;
+//        this.popSound = popSound;
         this.world = world;
         setySpeed(-bubbleSize / 10f);
         /* De volgende regels zijn in een zelfgekend object nodig
@@ -53,9 +41,9 @@ public class Bubble extends GameObject implements ICollidableWithGameObjects {
     @Override
     public void gameObjectCollisionOccurred(List<GameObject> collidedGameObjects) {
         for (GameObject g : collidedGameObjects) {
-            if (g instanceof Swordfish) {
-                popSound.rewind();
-                popSound.play();
+            if (g instanceof Enemy) {
+//                popSound.rewind();
+//                popSound.play();
                 world.deleteGameObject(this);
                 world.increaseBubblesPopped();
             }

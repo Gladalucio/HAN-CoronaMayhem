@@ -8,25 +8,14 @@ import nl.han.ica.oopg.objects.AnimatedSpriteObject;
 import nl.han.ica.oopg.objects.Sprite;
 import pedroroel.coronamayhem.tiles.BoardsTile;
 import processing.core.PVector;
-
 import java.util.List;
 
-
-/**
- * @author Ralph Niels
- * De spelerklasse (het paarse visje)
- */
 public class Player extends AnimatedSpriteObject implements ICollidableWithTiles {
     final int size = 25;
     private final CoronaMayhem world;
 
-    /**
-     * Constructor
-     *
-     * @param world Referentie naar de wereld
-     */
     public Player(CoronaMayhem world) {
-        super(new Sprite("src/main/java/pedroroel/coronamayhem/media/player.png"), 2);
+        super(new Sprite("src/main/java/pedroroel/coronamayhem/assets/images/doctor_mask.png"), 2);
         this.world = world;
         setCurrentFrameIndex(1);
         setFriction(0.05f);
@@ -74,7 +63,6 @@ public class Player extends AnimatedSpriteObject implements ICollidableWithTiles
             System.out.println("Spatie!");
         }
     }
-
 
     @Override
     public void tileCollisionOccurred(List<CollidedTile> collidedTiles) {

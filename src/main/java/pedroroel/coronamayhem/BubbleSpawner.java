@@ -6,24 +6,12 @@ import nl.han.ica.oopg.sound.Sound;
 
 import java.util.Random;
 
-/**
- * @author Ralph Niels
- * Klasse die Bubbles aanmaakt met configureerbare
- * snelheid.
- */
 public class BubbleSpawner implements IAlarmListener {
     private float bubblesPerSecond;
     private Random random;
     private CoronaMayhem world;
     private Sound popSound;
 
-    /**
-     * Constructor
-     *
-     * @param world            Referentie naar de wereld
-     * @param popSound         Geluid dat moet klinken als een bel knapt
-     * @param bubblesPerSecond Aantal bellen dat per seconden gemaakt moet worden
-     */
     public BubbleSpawner(CoronaMayhem world, Sound popSound, float bubblesPerSecond) {
         this.bubblesPerSecond = bubblesPerSecond;
         this.world = world;

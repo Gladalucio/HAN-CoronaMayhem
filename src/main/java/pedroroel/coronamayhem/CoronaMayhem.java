@@ -8,15 +8,10 @@ import nl.han.ica.oopg.persistence.IPersistence;
 import nl.han.ica.oopg.sound.Sound;
 import nl.han.ica.oopg.tile.TileMap;
 import nl.han.ica.oopg.tile.TileType;
-import nl.han.ica.oopg.view.EdgeFollowingViewport;
 import nl.han.ica.oopg.view.View;
 import pedroroel.coronamayhem.tiles.BoardsTile;
 import processing.core.PApplet;
 
-/**
- * @author Waterworld: Ralph Niels
- * @author coronamayhem: Pedro van Douveren, Roel Stevens
- */
 public class CoronaMayhem extends GameEngine {
     private Sound backgroundSound;
     private Sound bubblePopSound;
@@ -28,101 +23,52 @@ public class CoronaMayhem extends GameEngine {
 
     public static void main(String[] args) {
         String[] processingArgs = {"CoronaMayhem"};
-        CoronaMayhem mySketch = new CoronaMayhem();
+        CoronaMayhem coronaMayhem = new CoronaMayhem();
 
-        PApplet.runSketch(processingArgs, mySketch);
+        PApplet.runSketch(processingArgs, coronaMayhem);
     }
 
-    /**
-     * In deze methode worden de voor het spel
-     * noodzakelijke zaken geïnitialiseerd
-     */
     @Override
     public void setupGame() {
-        int worldWidth = 1204;
-        int worldHeight = 903;
+        int worldWidth = 1200;
+        int worldHeight = 900;
 
-        initializeSound();
+//        initializeSound();
         createDashboard(worldWidth, 100);
         initializeTileMap();
         initializePersistence();
 
         createObjects();
-        createBubbleSpawner();
+//        createBubbleSpawner();
 
         createViewWithoutViewport(worldWidth, worldHeight);
     }
 
-    /**
-     * Creeërt de view zonder viewport
-     *
-     * @param screenWidth  Breedte van het scherm
-     * @param screenHeight Hoogte van het scherm
-     */
     private void createViewWithoutViewport(int screenWidth, int screenHeight) {
         View view = new View(screenWidth, screenHeight);
-        view.setBackground(loadImage("src/main/java/pedroroel/coronamayhem/media/background.jpg"));
+        view.setBackground(loadImage("src/main/java/pedroroel/coronamayhem/assets/images/background.jpg"));
 
         setView(view);
         size(screenWidth, screenHeight);
     }
 
-    /**
-     * Creeërt de view met viewport
-     *
-     * @param worldWidth   Totale breedte van de wereld
-     * @param worldHeight  Totale hoogte van de wereld
-     * @param screenWidth  Breedte van het scherm
-     * @param screenHeight Hoogte van het scherm
-     * @param zoomFactor   Factor waarmee wordt ingezoomd
-     */
-    private void createViewWithViewport(int worldWidth, int worldHeight, int screenWidth, int screenHeight, float zoomFactor) {
-        EdgeFollowingViewport viewPort =
-                new EdgeFollowingViewport(
-                        player,
-                        (int) Math.ceil(screenWidth / zoomFactor),
-                        (int) Math.ceil(screenHeight / zoomFactor),
-                        0,
-                        0);
-        viewPort.setTolerance(50, 50, 50, 50);
-        View view = new View(viewPort, worldWidth, worldHeight);
-        setView(view);
-        size(screenWidth, screenHeight);
-        view.setBackground(loadImage("src/main/java/pedroroel/coronamayhem/media/background.jpg"));
-    }
-
-    /**
-     * Initialiseert geluid
-     */
     private void initializeSound() {
         backgroundSound = new Sound(this, "src/main/java/pedroroel/coronamayhem/media/waterworld.mp3");
         backgroundSound.loop(-1);
         bubblePopSound = new Sound(this, "src/main/java/pedroroel/coronamayhem/media/pop.mp3");
     }
 
-    /**
-     * Maakt de spelobjecten aan
-     */
     private void createObjects() {
         player = new Player(this);
-        addGameObject(player, 100, 100);
-        Swordfish sf = new Swordfish(this);
-        addGameObject(sf, 200, 200);
+        addGameObject(player, 590, 725);
+        Enemy sf = new Enemy(this);
+        addGameObject(sf, 590, 220);
     }
 
-    /**
-     * Maakt de spawner voor de bellen aan
-     */
     public void createBubbleSpawner() {
         bubbleSpawner = new BubbleSpawner(this, bubblePopSound, 2);
     }
 
-    /**
-     * Maakt het dashboard aan
-     *
-     * @param dashboardWidth  Gewenste breedte van dashboard
-     * @param dashboardHeight Gewenste hoogte van dashboard
-     */
     private void createDashboard(int dashboardWidth, int dashboardHeight) {
         Dashboard dashboard = new Dashboard(0, 0, dashboardWidth, dashboardHeight);
         dashboardText = new TextObject("");
@@ -130,11 +76,7 @@ public class CoronaMayhem extends GameEngine {
         addDashboard(dashboard);
     }
 
-    /**
-     * Initialiseert de opslag van de bellenteller
-     * en laadt indien mogelijk de eerder opgeslagen
-     * waarde
-     */
+    /** File persistence */
     private void initializePersistence() {
         persistence = new FilePersistence("main/java/pedroroel/coronamayhem/media/bubblesPopped.txt");
         if (persistence.fileExists()) {
@@ -143,11 +85,8 @@ public class CoronaMayhem extends GameEngine {
         }
     }
 
-    /**
-     * Initialiseert de tilemap
-     */
     private void initializeTileMap() {
-        Sprite boardsSprite = new Sprite("src/main/java/pedroroel/coronamayhem/media/boards-tile.jpg");
+        Sprite boardsSprite = new Sprite("src/main/java/pedroroel/coronamayhem/assets/images/tile.jpg");
         TileType<BoardsTile> boardTileType = new TileType<>(BoardsTile.class, boardsSprite);
 
         TileType[] tileTypes = {boardTileType};
@@ -159,8 +98,8 @@ public class CoronaMayhem extends GameEngine {
                 {0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0}, // 0 = 6+6, -1 = 12
                 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
                 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                {-1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1}, // 0 = 8, -1 = 16
                 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+                {-1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1}, // 0 = 8, -1 = 16
                 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
                 {0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0}, // 0 = 4+4, -1 = 16
                 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
@@ -179,17 +118,10 @@ public class CoronaMayhem extends GameEngine {
     public void update() {
     }
 
-    /**
-     * Vernieuwt het dashboard
-     */
     private void refreshDashboardText() {
         dashboardText.setText("Bubbles popped: " + bubblesPopped);
     }
 
-    /**
-     * Verhoogt de teller voor het aantal
-     * geknapte bellen met 1
-     */
     public void increaseBubblesPopped() {
         bubblesPopped++;
         persistence.saveData(Integer.toString(bubblesPopped));
