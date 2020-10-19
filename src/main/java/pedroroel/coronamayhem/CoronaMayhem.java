@@ -13,6 +13,8 @@ import processing.core.PApplet;
 import java.util.ArrayList;
 import java.util.List;
 
+// HANICA OOPG JAVADOC: https://hanica.github.io/oopg/
+
 public class CoronaMayhem extends GameEngine {
     private Player player;
     private List<Enemy> enemiesList = new ArrayList<Enemy>();
@@ -35,7 +37,17 @@ public class CoronaMayhem extends GameEngine {
     }
 
     @Override
-    public void update() {}
+    public void update() {
+//        System.out.println(player.getX() + " " + player.getY());
+    }
+
+    private void createObjects() {
+        player = new Player(this);
+        addGameObject(player, 590, 725);
+
+        enemiesList.add(new Enemy(this, Enemy.Color.Yellow, Enemy.SpawnSide.Left));
+        enemiesList.add(new Enemy(this, Enemy.Color.Red, Enemy.SpawnSide.Right));
+    }
 
     private void createViewWithoutViewport(int screenWidth, int screenHeight) {
         View view = new View(screenWidth, screenHeight);
@@ -43,14 +55,6 @@ public class CoronaMayhem extends GameEngine {
 
         setView(view);
         size(screenWidth, screenHeight);
-    }
-
-    private void createObjects() {
-        player = new Player(this);
-        addGameObject(player, 590, 725);
-        Enemy enemy = new Enemy(this, Enemy.Color.Yellow);
-        addGameObject(enemy, 590, 220);
-
     }
 
     private void initializeTileMap() {
@@ -63,13 +67,13 @@ public class CoronaMayhem extends GameEngine {
                 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
                 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
                 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                {0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0}, // 0 = 6+6, -1 = 12
+                {0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0}, // 0 = 6+6, -1 = 12
                 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
                 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
                 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
                 {-1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1}, // 0 = 8, -1 = 16
                 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                {0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0}, // 0 = 4+4, -1 = 16
+                {0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0}, // 0 = 5+5, -1 = 16
                 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
                 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
                 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},

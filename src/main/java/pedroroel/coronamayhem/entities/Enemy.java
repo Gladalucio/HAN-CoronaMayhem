@@ -3,8 +3,6 @@ package pedroroel.coronamayhem.entities;
 import nl.han.ica.oopg.objects.Sprite;
 import pedroroel.coronamayhem.CoronaMayhem;
 
-import java.util.Random;
-
 public class Enemy extends Person {
     public enum Color {
         Yellow,
@@ -20,30 +18,44 @@ public class Enemy extends Person {
     private SpawnSide spawnSide;
 
     public Enemy(CoronaMayhem world, Color enemyColor) {
-        super(world, new Sprite("src/main/java/pedroroel/coronamayhem/assets/images/enemy_yellow.png"));
+        super(world, new Sprite("src/main/java/pedroroel/coronamayhem/assets/images/enemy_" + enemyColor.toString().toLowerCase() + ".png"));
         this.enemyColor = enemyColor;
         determineSpawnSide();
-        setxSpeed(speed);
+        spawn();
+    }
+
+    public Enemy(CoronaMayhem world, Color enemyColor, SpawnSide spawnSide) {
+        super(world, new Sprite("src/main/java/pedroroel/coronamayhem/assets/images/enemy_" + enemyColor.toString().toLowerCase() + ".png"));
+        this.enemyColor = enemyColor;
+        this.spawnSide = spawnSide;
+        spawn();
     }
 
     @Override
     public void update() {
         if (getX() + getWidth() <= 0) {
-            setX(world.width);
+            setX(world.width - 100);
+        } else if (getX() >= world.width) {
+            setX(35);
         }
     }
 
     private void determineSpawnSide() {
-        Random r = new Random();
-        int spawnSideIndex = 0;
-        setCurrentFrameIndex(spawnSideIndex);
-        if (spawnSideIndex == 1) {
-            this.spawnSide = SpawnSide.Left;
-            setxSpeed(speed);
+        spawnSide = Math.random() < 0.5 ? SpawnSide.Left : SpawnSide.Right;
+    }
+
+    private void spawn() {
+        if (spawnSide == SpawnSide.Left) {
+            setCurrentFrameIndex(1);
+            setxSpeed((float) (speed + Math.random() / 2));
+            setX(35);
         } else {
-            this.spawnSide = SpawnSide.Right;
-            setxSpeed(-speed);
+            setCurrentFrameIndex(0);
+            setxSpeed(-(float) (speed + Math.random() / 2));
+            setX(world.width - 100);
         }
-//        this.spawnSide = r.nextInt(1) == 1 ? SpawnSide.Left : SpawnSide.Right;
+
+        setY(19);
+        world.addGameObject(this);
     }
 }

@@ -9,7 +9,8 @@ public class Player extends Person {
     public Player(CoronaMayhem world) {
         super(world, new Sprite("src/main/java/pedroroel/coronamayhem/assets/images/doctor_mask.png"));
         setCurrentFrameIndex(1);
-//        setFriction(0.1f);
+        setFriction(0.01f);
+        setGravity(0.1f);
     }
 
     @Override
@@ -34,22 +35,34 @@ public class Player extends Person {
 
     @Override
     public void keyPressed(int keyCode, char key) {
-        if (keyCode == world.LEFT) {
-            setDirectionSpeed(270, speed);
+        if (key == 'w') { // up
+            setDirectionSpeed(0, 3 * speed);
+        }
+        if (key == 'a') { // left
+            setDirectionSpeed(270, (float) (1.5 * speed));
             setCurrentFrameIndex(0);
         }
-        if (keyCode == world.UP) {
-            setDirectionSpeed(0, speed);
-        }
-        if (keyCode == world.RIGHT) {
-            setDirectionSpeed(90, speed);
+        if (key == 'd') { // right
+            setDirectionSpeed(90, (float) (1.5 * speed));
             setCurrentFrameIndex(1);
         }
-        if (keyCode == world.DOWN) {
-            setDirectionSpeed(180, speed);
-        }
-        if (key == ' ') {
-            System.out.println("Spatie!");
-        }
+
+//        if (keyCode == world.LEFT) {
+//            setDirectionSpeed(270, speed);
+//            setCurrentFrameIndex(0);
+//        }
+//        if (keyCode == world.UP) {
+//            setDirectionSpeed(0, speed);
+//        }
+//        if (keyCode == world.RIGHT) {
+//            setDirectionSpeed(90, speed);
+//            setCurrentFrameIndex(1);
+//        }
+//        if (keyCode == world.DOWN) {
+//            setDirectionSpeed(180, speed);
+//        }
+//        if (key == ' ') {
+//            System.out.println("Spatie!");
+//        }
     }
 }

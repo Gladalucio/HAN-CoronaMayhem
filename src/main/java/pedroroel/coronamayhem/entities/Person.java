@@ -14,33 +14,49 @@ import java.util.List;
 
 public abstract class Person extends AnimatedSpriteObject implements ICollidableWithTiles {
     protected CoronaMayhem world;
-    protected int speed = 2;
-//    protected float x, y, vx, vy, ax, ay = 0.2f;
+    protected float speed = 3f;
 
     public Person(CoronaMayhem world, Sprite sprite, int totalFrames) {
         super(sprite, totalFrames);
         this.world = world;
+        setGravity(0.03f);
     }
 
     public Person(CoronaMayhem world, Sprite sprite) {
         super(sprite,2 );
         this.world = world;
+        setGravity(0.03f);
     }
 
     @Override
     public void tileCollisionOccurred(List<CollidedTile> collidedTiles) {
-        PVector vector;
-
         for (CollidedTile ct : collidedTiles) {
             if (ct.getTile() instanceof GameTile) {
-                if (CollisionSide.TOP.equals(ct.getCollisionSide())) {
-                    try {
-                        vector = world.getTileMap().getTilePixelLocation(ct.getTile());
+                try {
+                    PVector vector = world.getTileMap().getTilePixelLocation(ct.getTile());
+
+                    if (CollisionSide.TOP.equals(ct.getCollisionSide())) {
                         setY(vector.y - getHeight());
-                    } catch (TileNotFoundException e) {
-                        e.printStackTrace();
+
+                        if (getDirection() == 180 && this instanceof Enemy) {
+                            boolean goRight = Math.random() < 0.5;
+                            setDirectionSpeed(goRight ? 90 : 270, speed);
+                            setCurrentFrameIndex(goRight ? 1 : 0);
+                        }
+                    } else if (CollisionSide.BOTTOM.equals(ct.getCollisionSide())) {
+//                        setDirectionSpeed(180, speed);
                     }
+                } catch (TileNotFoundException e) {
+                    e.printStackTrace();
                 }
+//                if (CollisionSide.TOP.equals(ct.getCollisionSide())) {
+//                    try {
+//                        vector = world.getTileMap().getTilePixelLocation(ct.getTile());
+//                        setY(vector.y - getHeight());
+//                    } catch (TileNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
             }
         }
     }
