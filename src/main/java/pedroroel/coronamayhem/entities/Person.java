@@ -19,13 +19,18 @@ public abstract class Person extends AnimatedSpriteObject implements ICollidable
     public Person(CoronaMayhem world, Sprite sprite, int totalFrames) {
         super(sprite, totalFrames);
         this.world = world;
-        setGravity(0.03f);
+        setGravity(0.1f);
     }
 
-    public Person(CoronaMayhem world, Sprite sprite) {
-        super(sprite,2 );
-        this.world = world;
-        setGravity(0.03f);
+    /**
+     * Function added to stop the Y-speed going through the roof.
+     * The y-speed of the entity is 0,66th so it's harder to notice
+     * */
+
+    protected void resetYSpeed() {
+        if (getySpeed() > 5) {
+            setySpeed(getySpeed() / 3 * 2);
+        }
     }
 
     @Override
@@ -33,11 +38,13 @@ public abstract class Person extends AnimatedSpriteObject implements ICollidable
         for (CollidedTile ct : collidedTiles) {
             if (ct.getTile() instanceof GameTile) {
                 try {
+                    resetYSpeed();
                     PVector vector = world.getTileMap().getTilePixelLocation(ct.getTile());
 
                     if (CollisionSide.TOP.equals(ct.getCollisionSide())) {
                         setY(vector.y - getHeight());
 
+                        // On collision and moving downward, give enemies a random direction to walk in
                         if (getDirection() == 180 && this instanceof Enemy) {
                             boolean goRight = Math.random() < 0.5;
                             setDirectionSpeed(goRight ? 90 : 270, speed);
@@ -46,17 +53,10 @@ public abstract class Person extends AnimatedSpriteObject implements ICollidable
                     } else if (CollisionSide.BOTTOM.equals(ct.getCollisionSide())) {
 //                        setDirectionSpeed(180, speed);
                     }
+                    // Watch out: Adding "CollisionSide.RIGHT" and ".LEFT" results in weird behavior
                 } catch (TileNotFoundException e) {
                     e.printStackTrace();
                 }
-//                if (CollisionSide.TOP.equals(ct.getCollisionSide())) {
-//                    try {
-//                        vector = world.getTileMap().getTilePixelLocation(ct.getTile());
-//                        setY(vector.y - getHeight());
-//                    } catch (TileNotFoundException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
             }
         }
     }

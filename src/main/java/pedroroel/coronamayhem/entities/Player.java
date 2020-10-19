@@ -6,13 +6,18 @@ import pedroroel.coronamayhem.CoronaMayhem;
 public class Player extends Person {
     final int size = 25;
 
+    /**
+     * New player has his sprite, currentFrameIndex and gravity set
+     * @param world contains a CoronaMayhem reference
+     */
     public Player(CoronaMayhem world) {
-        super(world, new Sprite("src/main/java/pedroroel/coronamayhem/assets/images/doctor_mask.png"));
+        super(world, new Sprite("src/main/java/pedroroel/coronamayhem/assets/images/doctor_mask.png"), 2);
         setCurrentFrameIndex(1);
-        setFriction(0.01f);
-        setGravity(0.1f);
     }
 
+    /**
+     * Controls player movement after a direction has been chosen in "keyPressed()"
+     */
     @Override
     public void update() {
         if (getX() <= 0) {
@@ -33,6 +38,11 @@ public class Player extends Person {
         }
     }
 
+    /**
+     * handles the pressed keys and starts an action if it's implemented
+     * @param keyCode pressed character keyCode
+     * @param key pressed character key
+     */
     @Override
     public void keyPressed(int keyCode, char key) {
         if (key == 'w') { // up
@@ -46,23 +56,5 @@ public class Player extends Person {
             setDirectionSpeed(90, (float) (1.5 * speed));
             setCurrentFrameIndex(1);
         }
-
-//        if (keyCode == world.LEFT) {
-//            setDirectionSpeed(270, speed);
-//            setCurrentFrameIndex(0);
-//        }
-//        if (keyCode == world.UP) {
-//            setDirectionSpeed(0, speed);
-//        }
-//        if (keyCode == world.RIGHT) {
-//            setDirectionSpeed(90, speed);
-//            setCurrentFrameIndex(1);
-//        }
-//        if (keyCode == world.DOWN) {
-//            setDirectionSpeed(180, speed);
-//        }
-//        if (key == ' ') {
-//            System.out.println("Spatie!");
-//        }
     }
 }
