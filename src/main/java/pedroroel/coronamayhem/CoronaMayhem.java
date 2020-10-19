@@ -6,8 +6,9 @@ import nl.han.ica.oopg.tile.TileMap;
 import nl.han.ica.oopg.tile.TileType;
 import nl.han.ica.oopg.view.View;
 import pedroroel.coronamayhem.entities.Player;
-import pedroroel.coronamayhem.entities.controllers.EnemyController;
-import pedroroel.coronamayhem.tiles.GameTile;
+import pedroroel.coronamayhem.controllers.EnemyController;
+import pedroroel.coronamayhem.objects.GameTile;
+import pedroroel.coronamayhem.objects.TextObject;
 import processing.core.PApplet;
 
 // HANICA OOPG JAVADOC: https://hanica.github.io/oopg/
@@ -15,6 +16,7 @@ import processing.core.PApplet;
 public class CoronaMayhem extends GameEngine {
     private Player player;
     private EnemyController enemyCtrl;
+    private TextObject scoreText;
 
     public static void main(String[] args) {
         String[] processingArgs = {"CoronaMayhem"};
@@ -47,6 +49,8 @@ public class CoronaMayhem extends GameEngine {
         addGameObject(player, 590, 725);
 
         enemyCtrl = new EnemyController(this);
+
+        scoreText = new TextObject("Score: ");
     }
 
     /**

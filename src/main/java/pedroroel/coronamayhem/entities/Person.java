@@ -7,7 +7,7 @@ import nl.han.ica.oopg.exceptions.TileNotFoundException;
 import nl.han.ica.oopg.objects.AnimatedSpriteObject;
 import nl.han.ica.oopg.objects.Sprite;
 import pedroroel.coronamayhem.CoronaMayhem;
-import pedroroel.coronamayhem.tiles.GameTile;
+import pedroroel.coronamayhem.objects.GameTile;
 import processing.core.PVector;
 
 import java.util.List;

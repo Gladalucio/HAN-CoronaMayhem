@@ -1,4 +1,4 @@
-package pedroroel.coronamayhem.entities.controllers;
+package pedroroel.coronamayhem.controllers;
 
 import nl.han.ica.oopg.alarm.Alarm;
 import nl.han.ica.oopg.alarm.IAlarmListener;

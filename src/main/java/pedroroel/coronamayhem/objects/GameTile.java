@@ -1,4 +1,4 @@
-package pedroroel.coronamayhem.tiles;
+package pedroroel.coronamayhem.objects;
 
 import nl.han.ica.oopg.objects.Sprite;
 import nl.han.ica.oopg.tile.Tile;
