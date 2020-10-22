@@ -3,6 +3,8 @@ package pedroroel.coronamayhem.entities;
 import nl.han.ica.oopg.objects.Sprite;
 import pedroroel.coronamayhem.CoronaMayhem;
 
+import java.util.List;
+
 public class Player extends Person {
     final int size = 25;
 
@@ -37,12 +39,12 @@ public class Player extends Person {
             setY(world.height - size);
         }
     }
-
     /**
      * handles the pressed keys and starts an action if it's implemented
      * @param keyCode pressed character keyCode
      * @param key pressed character key
      */
+
     @Override
     public void keyPressed(int keyCode, char key) {
         if (key == 'w') { // up

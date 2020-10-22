@@ -4,6 +4,7 @@ import nl.han.ica.oopg.objects.Sprite;
 import pedroroel.coronamayhem.CoronaMayhem;
 
 public class Enemy extends Person {
+
     public enum Color {
         Yellow,
         Orange,

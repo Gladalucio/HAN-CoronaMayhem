@@ -39,7 +39,9 @@ public class CoronaMayhem extends GameEngine {
     }
 
     @Override
-    public void update() {}
+    public void update() {
+        enemyCtrl.entityCollisionOccurred(player);
+    }
 
     /**
      * Creates the objects used.
@@ -49,6 +51,7 @@ public class CoronaMayhem extends GameEngine {
         addGameObject(player, 590, 725);
 
         enemyCtrl = new EnemyController(this);
+
 
         scoreText = new TextObject("Score: ");
     }

@@ -33,6 +33,7 @@ public abstract class Person extends AnimatedSpriteObject implements ICollidable
         }
     }
 
+
     @Override
     public void tileCollisionOccurred(List<CollidedTile> collidedTiles) {
         for (CollidedTile ct : collidedTiles) {
