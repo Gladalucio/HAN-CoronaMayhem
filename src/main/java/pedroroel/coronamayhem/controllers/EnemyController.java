@@ -15,7 +15,8 @@ public class EnemyController implements IAlarmListener {
     private float spawnDelay = 3;
     private int maxEnemies = 10;
     private boolean collision = false;
-    private Enemy closestEnemy;
+    private static Enemy closestEnemy;
+    private Boolean killed = false;
 
     public EnemyController(CoronaMayhem world) {
         this.world = world;
@@ -35,11 +36,37 @@ public class EnemyController implements IAlarmListener {
     }
 
     /**
+     * returns true if collision is currently happening between player and enemy
+     * @return Boolean
+     */
+    public boolean getCollision()
+    {
+        return collision;
+    }
+
+    /**
+     * returns the closest enemy to the player
+     * @return Enemy
+     */
+    public Enemy getClosestEnemy()
+    {
+        return closestEnemy;
+    }
+
+    /**
+     * returns true when the player colides with an enemy at the right angle to kill it
+     * @return boolean
+     */
+    public Boolean getKilled()
+    {
+        return killed;
+    }
+    /**
      *
-     * @param player contains the current player
+     *
      * calculates and picks the current closest enemy to the player and returns a true on collision
      */
-    public boolean entityCollisionOccurred(Player player)
+    public void entityCollisionOccurred(Player player)
     {
         double closestEnemyDistance = 10000.0;
 
@@ -53,14 +80,23 @@ public class EnemyController implements IAlarmListener {
         }
         if(collision == false && closestEnemy.getDistanceFrom(player) == 0.0)
         {
-            System.out.println("dead motherfucker!");
-            collision = true;
-            return true;
+            if(player.getAngleFrom(closestEnemy) >= 160 && player.getAngleFrom(closestEnemy) <= 220)
+            {
+                killed = true;
+                collision = true;
+                enemiesList.remove(closestEnemy);
+                System.out.println("killed motherfucker!");
+
+            }else {
+                System.out.println("dead motherfucker!");
+                collision = true;
+            }
         }
         if(collision == true && closestEnemy.getDistanceFrom(player) != 0.0){
             collision = false;
+            killed = false;
         }
-        return false;
+
     }
 
     /**

@@ -21,7 +21,6 @@ public class TextObject extends GameObject {
     public void setText(String text) {
         this.text = text;
     }
-
     /**
      * Runs every cycle, updates text on screen
      * @param pg PGraphics

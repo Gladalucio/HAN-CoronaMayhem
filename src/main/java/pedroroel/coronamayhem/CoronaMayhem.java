@@ -5,6 +5,7 @@ import nl.han.ica.oopg.objects.Sprite;
 import nl.han.ica.oopg.tile.TileMap;
 import nl.han.ica.oopg.tile.TileType;
 import nl.han.ica.oopg.view.View;
+import pedroroel.coronamayhem.entities.Enemy;
 import pedroroel.coronamayhem.entities.Player;
 import pedroroel.coronamayhem.controllers.EnemyController;
 import pedroroel.coronamayhem.objects.GameTile;
@@ -16,7 +17,10 @@ import processing.core.PApplet;
 public class CoronaMayhem extends GameEngine {
     private Player player;
     private EnemyController enemyCtrl;
-    private TextObject scoreText;
+    private static int score =0;
+    private TextObject scoreText = new TextObject("Score: " +score);
+    private int i = 0;
+
 
     public static void main(String[] args) {
         String[] processingArgs = {"CoronaMayhem"};
@@ -38,11 +42,35 @@ public class CoronaMayhem extends GameEngine {
         createView(worldWidth, worldHeight);
     }
 
+    /**
+     * checks if the player collides with an enemy and reduces his score by 1 each time
+     * TODO: summarize this into a function and leave update as clean as possible.
+     */
     @Override
     public void update() {
         enemyCtrl.entityCollisionOccurred(player);
+        if(enemyCtrl.getCollision() && i == 0)
+        {
+            if(enemyCtrl.getKilled() && i == 0)
+            {
+                i = 1;
+                deleteGameObject(enemyCtrl.getClosestEnemy());
+                score=score+1;
+            }else
+            {
+                i = 1;
+                score=score-1;
+            }
+            scoreText.setText("Score: " +score);
+            scoreText.update();
+        }
+        else
+            i = 1;
+        if(!enemyCtrl.getCollision() && i == 1)
+        {
+            i = 0;
+        }
     }
-
     /**
      * Creates the objects used.
      */
@@ -51,9 +79,7 @@ public class CoronaMayhem extends GameEngine {
         addGameObject(player, 590, 725);
 
         enemyCtrl = new EnemyController(this);
-
-
-        scoreText = new TextObject("Score: ");
+        addGameObject(scoreText, 540, 360);
     }
 
     /**

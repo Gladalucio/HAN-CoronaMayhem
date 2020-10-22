@@ -8,6 +8,7 @@ import java.util.List;
 public class Player extends Person {
     final int size = 25;
 
+
     /**
      * New player has his sprite, currentFrameIndex and gravity set
      * @param world contains a CoronaMayhem reference
