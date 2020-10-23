@@ -84,11 +84,12 @@ public class EnemyController implements IAlarmListener {
             {
                 killed = true;
                 collision = true;
+                world.deleteGameObject(closestEnemy);
                 enemiesList.remove(closestEnemy);
-                System.out.println("killed motherfucker!");
+                System.out.println("healed that sick SoaB!");
 
             }else {
-                System.out.println("dead motherfucker!");
+                System.out.println("infected by that SoaB!");
                 collision = true;
             }
         }
@@ -98,6 +99,7 @@ public class EnemyController implements IAlarmListener {
         }
 
     }
+
 
     /**
      * Restarts a previously set alarm unless the enemy limit has been exceeded

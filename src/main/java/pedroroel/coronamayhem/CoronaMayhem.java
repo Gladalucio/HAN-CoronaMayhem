@@ -42,19 +42,23 @@ public class CoronaMayhem extends GameEngine {
         createView(worldWidth, worldHeight);
     }
 
-    /**
-     * checks if the player collides with an enemy and reduces his score by 1 each time
-     * TODO: summarize this into a function and leave update as clean as possible.
-     */
+
     @Override
     public void update() {
         enemyCtrl.entityCollisionOccurred(player);
+        calculateScore();
+    }
+    /**
+     * checks if the player collides with an enemy and reduces his score by 1 each time
+     * TODO: move this ugly bit of code to enemyController and make it ~beautiful~
+     */
+    private void calculateScore()
+    {
         if(enemyCtrl.getCollision() && i == 0)
         {
             if(enemyCtrl.getKilled() && i == 0)
             {
                 i = 1;
-                deleteGameObject(enemyCtrl.getClosestEnemy());
                 score=score+1;
             }else
             {
@@ -64,8 +68,6 @@ public class CoronaMayhem extends GameEngine {
             scoreText.setText("Score: " +score);
             scoreText.update();
         }
-        else
-            i = 1;
         if(!enemyCtrl.getCollision() && i == 1)
         {
             i = 0;
