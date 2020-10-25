@@ -7,15 +7,26 @@ import java.util.List;
 
 public class Player extends Person {
     final int size = 25;
+    public int life = 1;
 
 
     /**
      * New player has his sprite, currentFrameIndex and gravity set
      * @param world contains a CoronaMayhem reference
      */
-    public Player(CoronaMayhem world) {
+    public Player(CoronaMayhem world, int life) {
+
         super(world, new Sprite("src/main/java/pedroroel/coronamayhem/assets/images/doctor_mask.png"), 2);
+        this.life = life;
         setCurrentFrameIndex(1);
+    }
+    public void increaseLife()
+    {
+        life = life +1;
+    }
+    public void reduceLife()
+    {
+        life = life -1;
     }
 
     /**
