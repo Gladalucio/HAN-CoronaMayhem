@@ -54,13 +54,13 @@ public class CoronaMayhem extends GameEngine {
      */
     private void calculateScore()
     {
-        if(enemyCtrl.getCollision() && i == 0)
+        if (enemyCtrl.getCollision() && i == 0)
         {
-            if(enemyCtrl.getKilled() && i == 0)
+            if (enemyCtrl.getKilled() && i == 0)
             {
                 i = 1;
                 score=score+1;
-            }else
+            } else
             {
                 i = 1;
                 score=score-1;
@@ -68,7 +68,7 @@ public class CoronaMayhem extends GameEngine {
             scoreText.setText("Score: " +score);
             scoreText.update();
         }
-        if(!enemyCtrl.getCollision() && i == 1)
+        if (!enemyCtrl.getCollision() && i == 1)
         {
             i = 0;
         }

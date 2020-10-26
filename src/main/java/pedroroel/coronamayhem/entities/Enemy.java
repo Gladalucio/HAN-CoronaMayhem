@@ -57,11 +57,11 @@ public class Enemy extends Person {
     private void spawn() {
         if (spawnSide == SpawnSide.Left) {
             setCurrentFrameIndex(1);
-            setxSpeed((float) (speed + Math.random() / 2));
+            setxSpeed((float) (personSpeed + Math.random() / 2));
             setX(35);
         } else if (spawnSide == SpawnSide.Right){
             setCurrentFrameIndex(0);
-            setxSpeed(-(float) (speed + Math.random() / 2));
+            setxSpeed(-(float) (personSpeed + Math.random() / 2));
             setX(world.width - 100);
         } else {
             determineSpawnSide();

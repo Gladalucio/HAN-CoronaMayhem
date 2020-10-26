@@ -14,12 +14,12 @@ import java.util.List;
 
 public abstract class Person extends AnimatedSpriteObject implements ICollidableWithTiles {
     protected CoronaMayhem world;
-    protected float speed = 3f;
+    protected float personSpeed = 2f;
 
     public Person(CoronaMayhem world, Sprite sprite, int totalFrames) {
         super(sprite, totalFrames);
         this.world = world;
-        setGravity(0.1f);
+        setGravity(0.3f);
     }
 
     /**
@@ -28,11 +28,10 @@ public abstract class Person extends AnimatedSpriteObject implements ICollidable
      * */
 
     protected void resetYSpeed() {
-        if (getySpeed() > 5) {
+        if (getySpeed() > 20) {
             setySpeed(getySpeed() / 3 * 2);
         }
     }
-
 
     @Override
     public void tileCollisionOccurred(List<CollidedTile> collidedTiles) {
@@ -48,7 +47,7 @@ public abstract class Person extends AnimatedSpriteObject implements ICollidable
                         // On collision and moving downward, give enemies a random direction to walk in
                         if (getDirection() == 180 && this instanceof Enemy) {
                             boolean goRight = Math.random() < 0.5;
-                            setDirectionSpeed(goRight ? 90 : 270, speed);
+                            setDirectionSpeed(goRight ? 90 : 270, personSpeed);
                             setCurrentFrameIndex(goRight ? 1 : 0);
                         }
                     } else if (CollisionSide.BOTTOM.equals(ct.getCollisionSide())) {

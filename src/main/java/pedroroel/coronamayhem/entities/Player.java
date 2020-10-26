@@ -8,7 +8,6 @@ import java.util.List;
 public class Player extends Person {
     final int size = 25;
 
-
     /**
      * New player has his sprite, currentFrameIndex and gravity set
      * @param world contains a CoronaMayhem reference
@@ -16,6 +15,7 @@ public class Player extends Person {
     public Player(CoronaMayhem world) {
         super(world, new Sprite("src/main/java/pedroroel/coronamayhem/assets/images/doctor_mask.png"), 2);
         setCurrentFrameIndex(1);
+        setFriction(0.025f);
     }
 
     /**
@@ -40,23 +40,30 @@ public class Player extends Person {
             setY(world.height - size);
         }
     }
+
     /**
      * handles the pressed keys and starts an action if it's implemented
      * @param keyCode pressed character keyCode
      * @param key pressed character key
      */
-
     @Override
     public void keyPressed(int keyCode, char key) {
-        if (key == 'w') { // up
-            setDirectionSpeed(0, 3 * speed);
+        float jumpSpeed = 16;
+        float directionalSpeed = 5;
+
+        /* Direction: Up */
+        if (key == 'w' && getDirection() != 0) {
+            setDirectionSpeed(0, jumpSpeed);
         }
-        if (key == 'a') { // left
-            setDirectionSpeed(270, (float) (1.5 * speed));
+
+        /* Direction: Left */
+        if (key == 'a') {
+            setDirectionSpeed(270, directionalSpeed);
             setCurrentFrameIndex(0);
         }
-        if (key == 'd') { // right
-            setDirectionSpeed(90, (float) (1.5 * speed));
+        /* Direction: Right */
+        if (key == 'd') {
+            setDirectionSpeed(90, directionalSpeed);
             setCurrentFrameIndex(1);
         }
     }

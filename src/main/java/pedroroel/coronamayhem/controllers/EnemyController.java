@@ -13,7 +13,7 @@ public class EnemyController implements IAlarmListener {
     private CoronaMayhem world;
     private List<Enemy> enemiesList = new ArrayList<Enemy>();
     private float spawnDelay = 3;
-    private int maxEnemies = 10;
+    private int maxEnemies = 5;
     private boolean collision = false;
     private static Enemy closestEnemy;
     private Boolean killed = false;
