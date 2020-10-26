@@ -1,5 +1,6 @@
 package pedroroel.coronamayhem;
 
+import nl.han.ica.oopg.dashboard.Dashboard;
 import nl.han.ica.oopg.engine.GameEngine;
 import nl.han.ica.oopg.objects.Sprite;
 import nl.han.ica.oopg.tile.TileMap;
@@ -18,8 +19,13 @@ public class CoronaMayhem extends GameEngine {
     private Player player;
     private EnemyController enemyCtrl;
     private static int score =0;
-    private TextObject scoreText = new TextObject("Score: " +score);
+    private TextObject scoreText = new TextObject("Score: " +score+" Lives: 1");
+    private TextObject playButton = new TextObject("Play Game!");
+    private TextObject exitButton = new TextObject("Exit Game!");
+    private Dashboard menu = new Dashboard(350,160,500,500);
     private int i = 0;
+    private boolean started = false;
+
 
 
     public static void main(String[] args) {
@@ -38,15 +44,17 @@ public class CoronaMayhem extends GameEngine {
 
         initializeTileMap();
         createObjects();
-
         createView(worldWidth, worldHeight);
+        this.setGameSpeed(10);
     }
 
 
     @Override
     public void update() {
+        System.out.println(mouseX +" : "+ mouseY);
         enemyCtrl.entityCollisionOccurred(player);
         calculateScore();
+        Menu();
     }
     /**
      * checks if the player collides with an enemy and reduces his score by 1 each time
@@ -54,31 +62,64 @@ public class CoronaMayhem extends GameEngine {
      */
     private void calculateScore()
     {
-        if (enemyCtrl.getCollision() && i == 0)
+        if(enemyCtrl.getCollision() && i == 0)
         {
-            if (enemyCtrl.getKilled() && i == 0)
+            if(enemyCtrl.getKilled() && i == 0)
             {
                 i = 1;
                 score=score+1;
-            } else
+                if(score % 5 == 0)
+                {
+                    player.increaseLife();
+                }
+            }else
             {
                 i = 1;
                 score=score-1;
+                player.reduceLife();
             }
-            scoreText.setText("Score: " +score);
+            scoreText.setText("Score: " +score+" Lives: "+player.life);
             scoreText.update();
         }
-        if (!enemyCtrl.getCollision() && i == 1)
+        if(!enemyCtrl.getCollision() && i == 1)
         {
             i = 0;
+        }
+        if(player.life <= 0)
+        {
+
+            pauseGame();
+
+        }
+    }
+    public void Menu()
+    {
+
+        if(started == false && mouseX >= 539 && mouseX <= 680 && mouseY >= 300 && mouseY <= 340)
+        {
+            started = true;
+            deleteGameObject(player);
+            deleteDashboard(menu);
+            player = new Player(this, 1);
+            addGameObject(player, 590, 400);
+            this.setGameSpeed(60);
+        }
+        else if(started == false && mouseX >= 539 && mouseX <= 680 && mouseY >= 470 && mouseY <= 500)
+        {
+            this.exit();
         }
     }
     /**
      * Creates the objects used.
      */
     private void createObjects() {
-        player = new Player(this);
-        addGameObject(player, 590, 725);
+        Dashboard deathScreen = new Dashboard(400,400,500,500);
+        menu.setBackground(2,15,30);
+        menu.addGameObject(playButton, -160,1);
+        menu.addGameObject(exitButton, -160,150);
+        addDashboard(menu);
+        player = new Player(this, 500);
+        addGameObject(player, 590, 300);
 
         enemyCtrl = new EnemyController(this);
         addGameObject(scoreText, 540, 360);
