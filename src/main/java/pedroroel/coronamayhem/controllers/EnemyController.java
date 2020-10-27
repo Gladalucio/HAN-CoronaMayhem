@@ -109,6 +109,10 @@ public class EnemyController implements IAlarmListener {
             startAlarm();
         }
     }
+    public List<Enemy> getAllEnemies()
+    {
+        return enemiesList;
+    }
 
     /**
      * Acts when alarm is triggered

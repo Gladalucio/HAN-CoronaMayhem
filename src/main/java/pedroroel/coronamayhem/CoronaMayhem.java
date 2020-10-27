@@ -20,9 +20,8 @@ public class CoronaMayhem extends GameEngine {
     private EnemyController enemyCtrl;
     private static int score =0;
     private TextObject scoreText = new TextObject("Score: " +score+" Lives: 1");
-    private TextObject playButton = new TextObject("Play Game!");
-    private TextObject exitButton = new TextObject("Exit Game!");
-    private Dashboard menu = new Dashboard(350,160,500,500);
+    private TextObject playButton = new TextObject("Press enter to Play Game!");
+    private TextObject exitButton = new TextObject("Press escape to Exit Game!");    private Dashboard menu = new Dashboard(350,160,500,500);
     private int i = 0;
     private boolean started = false;
 
@@ -94,19 +93,13 @@ public class CoronaMayhem extends GameEngine {
     }
     public void Menu()
     {
-
-        if(started == false && mouseX >= 539 && mouseX <= 680 && mouseY >= 300 && mouseY <= 340)
+        if(player.started == true)
         {
-            started = true;
-            deleteGameObject(player);
-            deleteDashboard(menu);
-            player = new Player(this, 1);
-            addGameObject(player, 590, 400);
-            this.setGameSpeed(60);
-        }
-        else if(started == false && mouseX >= 539 && mouseX <= 680 && mouseY >= 470 && mouseY <= 500)
-        {
-            this.exit();
+            if(getDashboards().contains(menu))
+            {
+                deleteDashboard(menu);
+                this.setGameSpeed(60);
+            }
         }
     }
     /**
@@ -114,14 +107,16 @@ public class CoronaMayhem extends GameEngine {
      */
     private void createObjects() {
         Dashboard deathScreen = new Dashboard(400,400,500,500);
-        menu.setBackground(2,15,30);
-        menu.addGameObject(playButton, -160,1);
-        menu.addGameObject(exitButton, -160,150);
-        addDashboard(menu);
-        player = new Player(this, 500);
+        player = new Player(this, 1);
+        player.setSpeed(0);
         addGameObject(player, 590, 300);
 
         enemyCtrl = new EnemyController(this);
+
+        addDashboard(menu);
+        menu.setBackground(2,15,30);
+        menu.addGameObject(playButton, -240,1);
+        menu.addGameObject(exitButton, -240,150);
         addGameObject(scoreText, 540, 360);
     }
 

@@ -73,6 +73,7 @@ public class Enemy extends Person {
         world.addGameObject(this);
     }
 
+
     // NOT WORKING PROPERLY, respawns lower down at times
     /**
      * Checks if character has to be respawned after reaching a wall and coming out on the other side

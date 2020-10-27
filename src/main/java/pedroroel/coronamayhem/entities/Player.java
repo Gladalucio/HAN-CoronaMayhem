@@ -8,6 +8,7 @@ import java.util.List;
 public class Player extends Person {
     final int size = 25;
     public int life = 1;
+    public boolean started = false;
 
     /**
      * New player has his sprite, currentFrameIndex and gravity set
@@ -17,6 +18,7 @@ public class Player extends Person {
 
         super(world, new Sprite("src/main/java/pedroroel/coronamayhem/assets/images/doctor_mask.png"), 2);
         this.life = life;
+        this.world = world;
         setCurrentFrameIndex(1);
         setFriction(0.025f);
     }
@@ -76,6 +78,13 @@ public class Player extends Person {
         if (key == 'd') {
             setDirectionSpeed(90, directionalSpeed);
             setCurrentFrameIndex(1);
+        }
+
+        if (keyCode == world.ENTER) {
+            started = true;
+        }
+        if (keyCode == world.ESC && !started) {
+            world.exit();
         }
     }
 }
