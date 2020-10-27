@@ -10,28 +10,54 @@ import pedroroel.coronamayhem.entities.Enemy;
 import pedroroel.coronamayhem.entities.Player;
 import pedroroel.coronamayhem.controllers.EnemyController;
 import pedroroel.coronamayhem.objects.GameTile;
+import pedroroel.coronamayhem.objects.Menu;
+import pedroroel.coronamayhem.objects.Scoreboard;
 import pedroroel.coronamayhem.objects.TextObject;
 import processing.core.PApplet;
 
 // HANICA OOPG JAVADOC: https://hanica.github.io/oopg/
 
 public class CoronaMayhem extends GameEngine {
-    private Player player;
-    private EnemyController enemyCtrl;
-    private static int score =0;
-    private TextObject scoreText = new TextObject("Score: " +score+" Lives: 1");
-    private TextObject playButton = new TextObject("Press enter to Play Game!");
-    private TextObject exitButton = new TextObject("Press escape to Exit Game!");    private Dashboard menu = new Dashboard(350,160,500,500);
-    private int i = 0;
-    private boolean started = false;
-
-
+    public final String baseImagePath = "src/main/java/pedroroel/coronamayhem/assets/images/";
+    private Player player = new Player(this, 1);
+    private EnemyController enemyCtrl = new EnemyController(this);
+    private Scoreboard scoreboard = new Scoreboard(this);
+    private Menu menu = new Menu(this);
+    private boolean gameStarted = true;
 
     public static void main(String[] args) {
         String[] processingArgs = {"CoronaMayhem"};
         CoronaMayhem coronaMayhem = new CoronaMayhem();
         PApplet.runSketch(processingArgs, coronaMayhem);
     }
+
+    //region Getters
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public Scoreboard getScoreboard() {
+        return scoreboard;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public EnemyController getEnemyCtrl() {
+        return enemyCtrl;
+    }
+
+    public boolean getGameStarted() {
+        return gameStarted;
+    }
+    //endregion
+
+    //region Setters
+    public void setGameStarted(boolean gameStarted) {
+        this.gameStarted = gameStarted;
+    }
+    //endregion
 
     /**
      * Provides the setup for the game.
@@ -41,83 +67,38 @@ public class CoronaMayhem extends GameEngine {
         int worldWidth = 1200;
         int worldHeight = 900;
 
-        initializeTileMap();
-        createObjects();
         createView(worldWidth, worldHeight);
-        this.setGameSpeed(10);
-    }
+        initializeTileMap();
 
+        addGameObject(player, 590, 500);
+        enemyCtrl.init();
+        enemyCtrl.startAlarm();
+        pause();
+    }
 
     @Override
     public void update() {
-        System.out.println(mouseX +" : "+ mouseY);
         enemyCtrl.entityCollisionOccurred(player);
-        calculateScore();
-        Menu();
     }
+
     /**
-     * checks if the player collides with an enemy and reduces his score by 1 each time
-     * TODO: move this ugly bit of code to enemyController and make it ~beautiful~
+     * Pauses the game and shows the menu
      */
-    private void calculateScore()
-    {
-        if(enemyCtrl.getCollision() && i == 0)
-        {
-            if(enemyCtrl.getKilled() && i == 0)
-            {
-                i = 1;
-                score=score+1;
-                if(score % 5 == 0)
-                {
-                    player.increaseLife();
-                }
-            }else
-            {
-                i = 1;
-                score=score-1;
-                player.reduceLife();
-            }
-            scoreText.setText("Score: " +score+" Lives: "+player.life);
-            scoreText.update();
-        }
-        if(!enemyCtrl.getCollision() && i == 1)
-        {
-            i = 0;
-        }
-        if(player.life <= 0)
-        {
-
-            pauseGame();
-
-        }
+    @Override
+    public void pause() {
+        pauseGame();
+        menu.show();
+        gameStarted = false;
     }
-    public void Menu()
-    {
-        if(player.started == true)
-        {
-            if(getDashboards().contains(menu))
-            {
-                deleteDashboard(menu);
-                this.setGameSpeed(60);
-            }
-        }
-    }
+
     /**
-     * Creates the objects used.
+     * Resumes the game and hides the menu
      */
-    private void createObjects() {
-        Dashboard deathScreen = new Dashboard(400,400,500,500);
-        player = new Player(this, 1);
-        player.setSpeed(0);
-        addGameObject(player, 590, 300);
-
-        enemyCtrl = new EnemyController(this);
-
-        addDashboard(menu);
-        menu.setBackground(2,15,30);
-        menu.addGameObject(playButton, -240,1);
-        menu.addGameObject(exitButton, -240,150);
-        addGameObject(scoreText, 540, 360);
+    @Override
+    public void resume() {
+        menu.hide();
+        resumeGame();
+        gameStarted = true;
     }
 
     /**
@@ -127,7 +108,7 @@ public class CoronaMayhem extends GameEngine {
      */
     private void createView(int screenWidth, int screenHeight) {
         View view = new View(screenWidth, screenHeight);
-        view.setBackground(loadImage("src/main/java/pedroroel/coronamayhem/assets/images/background.jpg"));
+        view.setBackground(loadImage(baseImagePath + "background.jpg"));
 
         setView(view);
         size(screenWidth, screenHeight);

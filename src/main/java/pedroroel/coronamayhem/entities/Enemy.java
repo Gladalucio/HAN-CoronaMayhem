@@ -4,7 +4,6 @@ import nl.han.ica.oopg.objects.Sprite;
 import pedroroel.coronamayhem.CoronaMayhem;
 
 public class Enemy extends Person {
-
     public enum Color {
         Yellow,
         Orange,
@@ -19,14 +18,14 @@ public class Enemy extends Person {
     private SpawnSide spawnSide;
 
     public Enemy(CoronaMayhem world, Color enemyColor) {
-        super(world, new Sprite("src/main/java/pedroroel/coronamayhem/assets/images/enemy_" + enemyColor.toString().toLowerCase() + ".png"), 2);
+        super(world, new Sprite(world.baseImagePath + "enemy_" + enemyColor.toString().toLowerCase() + ".png"), 2);
         this.enemyColor = enemyColor;
         determineSpawnSide();
         spawn();
     }
 
     public Enemy(CoronaMayhem world, Color enemyColor, SpawnSide spawnSide) {
-        super(world, new Sprite("src/main/java/pedroroel/coronamayhem/assets/images/enemy_" + enemyColor.toString().toLowerCase() + ".png"), 2);
+        super(world, new Sprite(world.baseImagePath + "enemy_" + enemyColor.toString().toLowerCase() + ".png"), 2);
         this.enemyColor = enemyColor;
         this.spawnSide = spawnSide;
         spawn();
@@ -38,10 +37,10 @@ public class Enemy extends Person {
      */
     @Override
     public void update() {
-        if (getX() + getWidth() <= 0) { // Hits left wall
+        if (getX() + getWidth() <= 0) { /* Hits left wall, reappears on the other side */
             setX(world.width - 100);
             checkForRespawn();
-        } else if (getX() >= world.width) { // Hits right wall
+        } else if (getX() >= world.width) { /* Hits right wall, reappears on the other side */
             setX(35);
             checkForRespawn();
         }
@@ -57,11 +56,11 @@ public class Enemy extends Person {
     private void spawn() {
         if (spawnSide == SpawnSide.Left) {
             setCurrentFrameIndex(1);
-            setxSpeed((float) (personSpeed + Math.random() / 2));
+            entitySpeed = (float) (entitySpeed + Math.random() / 2);
             setX(35);
         } else if (spawnSide == SpawnSide.Right){
             setCurrentFrameIndex(0);
-            setxSpeed(-(float) (personSpeed + Math.random() / 2));
+            entitySpeed = (float) -(entitySpeed + Math.random() / 2);
             setX(world.width - 100);
         } else {
             determineSpawnSide();
@@ -69,20 +68,22 @@ public class Enemy extends Person {
             return;
         }
 
+        if (world.getGameStarted()) {
+            setxSpeed(entitySpeed);
+        }
         setY(19);
+        System.out.println(getX() + ", " + getY() + ", " + getySpeed() + ", " + getxSpeed());
         world.addGameObject(this);
     }
 
-
-    // NOT WORKING PROPERLY, respawns lower down at times
     /**
      * Checks if character has to be respawned after reaching a wall and coming out on the other side
-     * If an enemy is on the bottom row, it should be respawned on the very top
+     * If an enemy is on the bottom row, it should be respawned at the very top row
      */
     private void checkForRespawn() {
         if (getY() > (world.height - this.height * 1.5)) {
-            System.out.println("respawn!");
-            setY(0);
+            setySpeed(0);
+            setY(19);
         }
     }
 }

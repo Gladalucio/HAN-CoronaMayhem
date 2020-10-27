@@ -14,7 +14,8 @@ import java.util.List;
 
 public abstract class Person extends AnimatedSpriteObject implements ICollidableWithTiles {
     protected CoronaMayhem world;
-    protected float personSpeed = 2f;
+    protected float entitySpeed = 2f;
+    public int lives = 1;
 
     public Person(CoronaMayhem world, Sprite sprite, int totalFrames) {
         super(sprite, totalFrames);
@@ -26,7 +27,6 @@ public abstract class Person extends AnimatedSpriteObject implements ICollidable
      * Function added to stop the Y-speed going through the roof.
      * The y-speed of the entity is 0,66th so it's harder to notice
      * */
-
     protected void resetYSpeed() {
         if (getySpeed() > 20) {
             setySpeed(getySpeed() / 3 * 2);
@@ -43,17 +43,7 @@ public abstract class Person extends AnimatedSpriteObject implements ICollidable
 
                     if (CollisionSide.TOP.equals(ct.getCollisionSide())) {
                         setY(vector.y - getHeight());
-
-                        // On collision and moving downward, give enemies a random direction to walk in
-                        if (getDirection() == 180 && this instanceof Enemy) {
-                            boolean goRight = Math.random() < 0.5;
-                            setDirectionSpeed(goRight ? 90 : 270, personSpeed);
-                            setCurrentFrameIndex(goRight ? 1 : 0);
-                        }
-                    } else if (CollisionSide.BOTTOM.equals(ct.getCollisionSide())) {
-//                        setDirectionSpeed(180, speed);
                     }
-                    // Watch out: Adding "CollisionSide.RIGHT" and ".LEFT" results in weird behavior
                 } catch (TileNotFoundException e) {
                     e.printStackTrace();
                 }

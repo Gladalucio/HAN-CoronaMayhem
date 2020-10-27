@@ -20,16 +20,17 @@ public class EnemyController implements IAlarmListener {
 
     public EnemyController(CoronaMayhem world) {
         this.world = world;
+    }
+
+    public void init() {
         enemiesList.add(new Enemy(world, Enemy.Color.Yellow, Enemy.SpawnSide.Left));
         enemiesList.add(new Enemy(world, Enemy.Color.Red, Enemy.SpawnSide.Right));
-
-        startAlarm();
     }
 
     /**
      * Starts an alarm (timeout) for spawning an enemy
      */
-    private void startAlarm() {
+    public void startAlarm() {
         Alarm alarm = new Alarm("enemy", spawnDelay);
         alarm.addTarget(this);
         alarm.start();
@@ -57,7 +58,7 @@ public class EnemyController implements IAlarmListener {
      * returns true when the player colides with an enemy at the right angle to kill it
      * @return boolean
      */
-    public Boolean getKilled()
+    public boolean getKilled()
     {
         return killed;
     }
@@ -86,10 +87,10 @@ public class EnemyController implements IAlarmListener {
                 collision = true;
                 world.deleteGameObject(closestEnemy);
                 enemiesList.remove(closestEnemy);
-                System.out.println("healed that sick SoaB!");
+                System.out.println("Healed a patient!");
 
             }else {
-                System.out.println("infected by that SoaB!");
+                System.out.println("Infected!");
                 collision = true;
             }
         }
@@ -97,9 +98,7 @@ public class EnemyController implements IAlarmListener {
             collision = false;
             killed = false;
         }
-
     }
-
 
     /**
      * Restarts a previously set alarm unless the enemy limit has been exceeded
@@ -109,6 +108,7 @@ public class EnemyController implements IAlarmListener {
             startAlarm();
         }
     }
+
     public List<Enemy> getAllEnemies()
     {
         return enemiesList;
@@ -120,7 +120,9 @@ public class EnemyController implements IAlarmListener {
      */
     @Override
     public void triggerAlarm(String alarmName) {
-        enemiesList.add(new Enemy(world, Enemy.Color.Yellow));
+        if (world.getGameStarted()) {
+            enemiesList.add(new Enemy(world, Enemy.Color.Yellow));
+        }
         restartAlarm();
     }
 }

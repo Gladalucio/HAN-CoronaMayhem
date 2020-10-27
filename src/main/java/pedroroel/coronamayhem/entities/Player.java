@@ -6,29 +6,27 @@ import pedroroel.coronamayhem.CoronaMayhem;
 import java.util.List;
 
 public class Player extends Person {
-    final int size = 25;
-    public int life = 1;
-    public boolean started = false;
+    private final int size = 25;
 
     /**
      * New player has his sprite, currentFrameIndex and gravity set
      * @param world contains a CoronaMayhem reference
      */
-    public Player(CoronaMayhem world, int life) {
-
-        super(world, new Sprite("src/main/java/pedroroel/coronamayhem/assets/images/doctor_mask.png"), 2);
-        this.life = life;
+    public Player(CoronaMayhem world, int lives) {
+        super(world, new Sprite(world.baseImagePath + "doctor_mask.png"), 2);
+        this.lives = lives;
         this.world = world;
         setCurrentFrameIndex(1);
         setFriction(0.025f);
     }
-    public void increaseLife()
+
+    public void increaseLives()
     {
-        life = life +1;
+        lives = lives + 1;
     }
-    public void reduceLife()
+    public void reduceLives()
     {
-        life = life -1;
+        lives = lives - 1;
     }
 
     /**
@@ -61,6 +59,24 @@ public class Player extends Person {
      */
     @Override
     public void keyPressed(int keyCode, char key) {
+        /* Enter starts the game */
+        if (keyCode == world.ENTER) {
+            if (world.getGameStarted()) {
+                world.pause();
+            } else {
+                world.resume();
+            }
+        }
+        /* Escape closes the game */
+        if (keyCode == world.ESC) {
+            world.exit();
+        }
+
+        /* If the game hasn't started yet, controlling the player shouldn't be possible */
+        if (!world.getGameStarted()) {
+            return;
+        }
+
         float jumpSpeed = 16;
         float directionalSpeed = 5;
 
@@ -78,13 +94,6 @@ public class Player extends Person {
         if (key == 'd') {
             setDirectionSpeed(90, directionalSpeed);
             setCurrentFrameIndex(1);
-        }
-
-        if (keyCode == world.ENTER) {
-            started = true;
-        }
-        if (keyCode == world.ESC && !started) {
-            world.exit();
         }
     }
 }
