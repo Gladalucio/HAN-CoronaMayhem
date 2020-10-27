@@ -72,7 +72,6 @@ public class Enemy extends Person {
             setxSpeed(entitySpeed);
         }
         setY(19);
-        System.out.println(getX() + ", " + getY() + ", " + getySpeed() + ", " + getxSpeed());
         world.addGameObject(this);
     }
 

@@ -1,18 +1,15 @@
 package pedroroel.coronamayhem;
 
-import nl.han.ica.oopg.dashboard.Dashboard;
 import nl.han.ica.oopg.engine.GameEngine;
 import nl.han.ica.oopg.objects.Sprite;
 import nl.han.ica.oopg.tile.TileMap;
 import nl.han.ica.oopg.tile.TileType;
 import nl.han.ica.oopg.view.View;
-import pedroroel.coronamayhem.entities.Enemy;
 import pedroroel.coronamayhem.entities.Player;
 import pedroroel.coronamayhem.controllers.EnemyController;
 import pedroroel.coronamayhem.objects.GameTile;
 import pedroroel.coronamayhem.objects.Menu;
 import pedroroel.coronamayhem.objects.Scoreboard;
-import pedroroel.coronamayhem.objects.TextObject;
 import processing.core.PApplet;
 
 // HANICA OOPG JAVADOC: https://hanica.github.io/oopg/
@@ -73,6 +70,7 @@ public class CoronaMayhem extends GameEngine {
         addGameObject(player, 590, 500);
         enemyCtrl.init();
         enemyCtrl.startAlarm();
+        scoreboard.show();
         pause();
     }
 
@@ -123,7 +121,7 @@ public class CoronaMayhem extends GameEngine {
 
         TileType[] tileTypes = {boardTileType};
         int tileSize = 50;
-        int tilesMap[][] = { // x = 24, y = 18. backgroundsize should be 1200x900
+        int tilesMap[][] = { // x = 24, y = 18
                 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
                 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
                 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},

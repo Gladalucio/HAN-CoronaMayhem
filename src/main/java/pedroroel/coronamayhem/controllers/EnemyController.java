@@ -14,9 +14,9 @@ public class EnemyController implements IAlarmListener {
     private List<Enemy> enemiesList = new ArrayList<Enemy>();
     private float spawnDelay = 3;
     private int maxEnemies = 5;
-    private boolean collision = false;
+    private boolean isColliding = false;
     private static Enemy closestEnemy;
-    private Boolean killed = false;
+    private Boolean enemyKilled = false;
 
     public EnemyController(CoronaMayhem world) {
         this.world = world;
@@ -40,9 +40,9 @@ public class EnemyController implements IAlarmListener {
      * returns true if collision is currently happening between player and enemy
      * @return Boolean
      */
-    public boolean getCollision()
+    public boolean getIsColliding()
     {
-        return collision;
+        return isColliding;
     }
 
     /**
@@ -55,16 +55,15 @@ public class EnemyController implements IAlarmListener {
     }
 
     /**
-     * returns true when the player colides with an enemy at the right angle to kill it
+     * returns true when the player collides with an enemy at the right angle to kill it
      * @return boolean
      */
-    public boolean getKilled()
+    public boolean getEnemyKilled()
     {
-        return killed;
+        return enemyKilled;
     }
+
     /**
-     *
-     *
      * calculates and picks the current closest enemy to the player and returns a true on collision
      */
     public void entityCollisionOccurred(Player player)
@@ -79,24 +78,26 @@ public class EnemyController implements IAlarmListener {
                 closestEnemy = ce;
             }
         }
-        if(collision == false && closestEnemy.getDistanceFrom(player) == 0.0)
+        if(isColliding == false && closestEnemy.getDistanceFrom(player) == 0.0)
         {
             if(player.getAngleFrom(closestEnemy) >= 160 && player.getAngleFrom(closestEnemy) <= 220)
             {
-                killed = true;
-                collision = true;
+                System.out.println("Healed a patient!");
+                enemyKilled = true;
+                isColliding = true;
                 world.deleteGameObject(closestEnemy);
                 enemiesList.remove(closestEnemy);
-                System.out.println("Healed a patient!");
+                world.getScoreboard().increase();
 
             }else {
                 System.out.println("Infected!");
-                collision = true;
+                isColliding = true;
+                world.getScoreboard().decrease();
             }
         }
-        if(collision == true && closestEnemy.getDistanceFrom(player) != 0.0){
-            collision = false;
-            killed = false;
+        if(isColliding == true && closestEnemy.getDistanceFrom(player) != 0.0){
+            isColliding = false;
+            enemyKilled = false;
         }
     }
 

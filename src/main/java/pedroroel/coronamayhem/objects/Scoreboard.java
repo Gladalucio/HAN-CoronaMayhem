@@ -9,19 +9,21 @@ public class Scoreboard {
 
     public Scoreboard(CoronaMayhem world) {
         this.world = world;
-        showScoreboard();
     }
 
-    public void showScoreboard() {
-        world.addGameObject(text, 540, 360);
+    public void show() {
+        float calcX = world.width / 2 * .85f; /* Center of the screen with a slight offset to the left (width of gameobject) */
+        float calcY = world.height / 18 * 7.25f; /* Based on the height of the screen divided by the number of tilerows */
+        System.out.println(calcX + ", " + calcY);
+        world.addGameObject(text, calcX, calcY);
     }
 
-    public void increaseScore() {
+    public void increase() {
         score++;
         update();
     }
 
-    public void decreaseScore() {
+    public void decrease() {
         score--;
         update();
     }
