@@ -27,6 +27,10 @@ public class Scoreboard {
         score--;
         update();
     }
+    public Scoreboard reset(){
+        score = 0;
+        return this;
+    }
 
     public void update() {
         text.setText("Score: " + score +" Lives: " + world.getPlayer().lives);
