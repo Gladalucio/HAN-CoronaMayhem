@@ -23,7 +23,7 @@ public class EnemyController implements IAlarmListener {
     }
 
     public void init() {
-        enemiesList.add(new Enemy(world, Enemy.Color.Yellow, Enemy.SpawnSide.Left));
+        enemiesList.add(new Enemy(world, Enemy.Color.Red, Enemy.SpawnSide.Left));
         enemiesList.add(new Enemy(world, Enemy.Color.Red, Enemy.SpawnSide.Right));
     }
 
@@ -85,14 +85,15 @@ public class EnemyController implements IAlarmListener {
                 System.out.println("Healed a patient!");
                 enemyKilled = true;
                 isColliding = true;
-                world.deleteGameObject(closestEnemy);
-                enemiesList.remove(closestEnemy);
+                closestEnemy.decreaseLives();
+//                world.deleteGameObject(closestEnemy);
+//                enemiesList.remove(closestEnemy);
                 world.getScoreboard().increase();
-
             }else {
                 System.out.println("Infected!");
                 isColliding = true;
                 world.getScoreboard().decrease();
+                player.decreaseLives();
             }
         }
         if(isColliding == true && closestEnemy.getDistanceFrom(player) != 0.0){
@@ -125,5 +126,9 @@ public class EnemyController implements IAlarmListener {
             enemiesList.add(new Enemy(world, Enemy.Color.Yellow));
         }
         restartAlarm();
+    }
+
+    public void removeFromEnemiesList(Enemy enemy) {
+        enemiesList.remove(enemy);
     }
 }

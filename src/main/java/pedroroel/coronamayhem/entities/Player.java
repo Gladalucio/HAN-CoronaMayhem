@@ -13,20 +13,11 @@ public class Player extends Person {
      * @param world contains a CoronaMayhem reference
      */
     public Player(CoronaMayhem world, int lives) {
-        super(world, new Sprite(world.baseImagePath + "doctor_mask.png"), 2);
+        super(world, new Sprite(world.baseImagePath + "player.png"), 4);
         this.lives = lives;
         this.world = world;
         setCurrentFrameIndex(1);
         setFriction(0.025f);
-    }
-
-    public void increaseLives()
-    {
-        lives = lives + 1;
-    }
-    public void reduceLives()
-    {
-        lives = lives - 1;
     }
 
     /**
@@ -50,6 +41,18 @@ public class Player extends Person {
             setySpeed(0);
             setY(world.height - size);
         }
+    }
+
+    public void setCurrentFrameIndexOffset() {
+        if (lives > 0) {
+            currentFrameIndexOffset = 0;
+        } else if (lives == 0){
+            currentFrameIndexOffset = 2;
+        } else {
+            /* Lives have reached a below 0 point. The Player is dead. */
+            world.pause();
+        }
+        setCurrentFrameIndex(getCurrentFrameIndex());
     }
 
     /**

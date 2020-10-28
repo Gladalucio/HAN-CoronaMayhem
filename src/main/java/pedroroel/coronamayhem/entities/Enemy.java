@@ -18,14 +18,16 @@ public class Enemy extends Person {
     private SpawnSide spawnSide;
 
     public Enemy(CoronaMayhem world, Color enemyColor) {
-        super(world, new Sprite(world.baseImagePath + "enemy_" + enemyColor.toString().toLowerCase() + ".png"), 2);
+        super(world, new Sprite(world.baseImagePath + "enemies.png"), 6);
+//        super(world, new Sprite(world.baseImagePath + "enemy_" + enemyColor.toString().toLowerCase() + ".png"), 2);
         this.enemyColor = enemyColor;
         determineSpawnSide();
         spawn();
     }
 
     public Enemy(CoronaMayhem world, Color enemyColor, SpawnSide spawnSide) {
-        super(world, new Sprite(world.baseImagePath + "enemy_" + enemyColor.toString().toLowerCase() + ".png"), 2);
+        super(world, new Sprite(world.baseImagePath + "enemies.png"), 6);
+//        super(world, new Sprite(world.baseImagePath + "enemy_" + enemyColor.toString().toLowerCase() + ".png"), 2);
         this.enemyColor = enemyColor;
         this.spawnSide = spawnSide;
         spawn();
@@ -46,6 +48,34 @@ public class Enemy extends Person {
         }
     }
 
+    @Override
+    public void decreaseLives() {
+        if (lives == 0) {
+            world.deleteGameObject(this);
+            world.getEnemyCtrl().removeFromEnemiesList(this);
+        } else {
+            super.decreaseLives();
+        }
+    }
+
+    public void setCurrentFrameIndexOffset() {
+        switch(lives) {
+            case 2:
+                enemyColor = Color.Red;
+                currentFrameIndexOffset = 4;
+                break;
+            case 1:
+                enemyColor = Color.Orange;
+                currentFrameIndexOffset = 2;
+                break;
+            case 0:
+                enemyColor = Color.Yellow;
+                currentFrameIndexOffset = 0;
+                break;
+        }
+        setCurrentFrameIndex(getCurrentFrameIndex());
+    }
+
     private void determineSpawnSide() {
         spawnSide = Math.random() < 0.5 ? SpawnSide.Left : SpawnSide.Right;
     }
@@ -54,6 +84,18 @@ public class Enemy extends Person {
      * Spawns an enemy facing and moving the correct way after deciding it's spawn side
      */
     private void spawn() {
+        switch(enemyColor) {
+            case Red:
+                lives = 2;
+                break;
+            case Orange:
+                lives = 1;
+                break;
+            case Yellow:
+                lives = 0;
+                break;
+        }
+
         if (spawnSide == SpawnSide.Left) {
             setCurrentFrameIndex(1);
             entitySpeed = (float) (entitySpeed + Math.random() / 2);
@@ -68,11 +110,10 @@ public class Enemy extends Person {
             return;
         }
 
-        if (world.getGameStarted()) {
-            setxSpeed(entitySpeed);
-        }
+        setxSpeed(entitySpeed);
         setY(19);
         world.addGameObject(this);
+        setCurrentFrameIndexOffset();
     }
 
     /**

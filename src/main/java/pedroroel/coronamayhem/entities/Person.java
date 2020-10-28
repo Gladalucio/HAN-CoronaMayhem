@@ -16,12 +16,31 @@ public abstract class Person extends AnimatedSpriteObject implements ICollidable
     protected CoronaMayhem world;
     protected float entitySpeed = 2f;
     public int lives = 1;
+    protected int currentFrameIndexOffset;
 
     public Person(CoronaMayhem world, Sprite sprite, int totalFrames) {
         super(sprite, totalFrames);
         this.world = world;
         setGravity(0.3f);
     }
+
+    @Override
+    public void setCurrentFrameIndex(int currentFrameIndex) {
+        currentFrameIndex %= 2;
+        super.setCurrentFrameIndex(currentFrameIndex + currentFrameIndexOffset);
+    }
+
+    public void increaseLives() {
+        lives += 1;
+        setCurrentFrameIndexOffset();
+    }
+
+    public void decreaseLives() {
+        lives -= 1;
+        setCurrentFrameIndexOffset();
+    }
+
+    public abstract void setCurrentFrameIndexOffset();
 
     /**
      * Function added to stop the Y-speed going through the roof.
