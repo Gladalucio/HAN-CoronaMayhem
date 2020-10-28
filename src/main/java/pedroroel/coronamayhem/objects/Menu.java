@@ -12,6 +12,9 @@ public class Menu {
         this.world = world;
     }
 
+    /**
+     * Shows the pause screen
+     */
     public void showPauseScreen() {
         TextObject playBtn = new TextObject("Press Enter to Play and Pause!");
         TextObject exitBtn = new TextObject("Press Escape to Exit!");
@@ -21,6 +24,10 @@ public class Menu {
         menu.addGameObject(playBtn, -240,1);
         menu.addGameObject(exitBtn, -240,150);
     }
+
+    /**
+     * Shows the death screen
+     */
     public void showDeathScreen() {
         TextObject deathText = new TextObject("You've Died!");
         TextObject exitBtn = new TextObject("Press Escape to Exit!");
@@ -33,6 +40,9 @@ public class Menu {
         deathScreen.addGameObject(exitBtn, -240,150);
     }
 
+    /**
+     * Hides all menu instances
+     */
     public void hide() {
         if(world.getDashboards().contains(menu))
         {

@@ -15,12 +15,16 @@ import java.util.List;
 public abstract class Person extends AnimatedSpriteObject implements ICollidableWithTiles {
     protected CoronaMayhem world;
     protected float entitySpeed = 2f;
-    public int lives = 1;
+    protected int lives = 1;
 
     public Person(CoronaMayhem world, Sprite sprite, int totalFrames) {
         super(sprite, totalFrames);
         this.world = world;
         setGravity(0.3f);
+    }
+
+    public int getLives() {
+        return lives;
     }
 
     @Override

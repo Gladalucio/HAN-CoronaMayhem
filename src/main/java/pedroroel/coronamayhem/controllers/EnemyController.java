@@ -10,10 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EnemyController implements IAlarmListener {
-    private CoronaMayhem world;
-    private List<Enemy> enemiesList = new ArrayList<Enemy>();
+    private final CoronaMayhem world;
+    private final List<Enemy> enemiesList = new ArrayList<>();
     private final String enemySpawnAlarmName = "enemy";
-    private final float baseSpawnDelay = 3;
     private float spawnDelay = 3;
     private int maxEnemies = 6;
     private boolean isColliding = false;
@@ -31,6 +30,8 @@ public class EnemyController implements IAlarmListener {
      * Starts an alarm (timeout) for spawning an enemy
      */
     public void startAlarm() {
+        int baseSpawnDelay = 3;
+
         spawnDelay = enemiesList.size() < 4 ? 0.75f : baseSpawnDelay;
         Alarm alarm = new Alarm(enemySpawnAlarmName, spawnDelay);
         alarm.addTarget(this);
@@ -56,7 +57,7 @@ public class EnemyController implements IAlarmListener {
                 closestEnemy = ce;
             }
         }
-        if(isColliding == false && closestEnemy.getDistanceFrom(player) == 0.0)
+        if(!isColliding && closestEnemy.getDistanceFrom(player) == 0.0)
         {
             if(player.getAngleFrom(closestEnemy) >= 160 && player.getAngleFrom(closestEnemy) <= 220)
             {
@@ -71,7 +72,7 @@ public class EnemyController implements IAlarmListener {
                 world.getScoreboard().decrease();
             }
         }
-        if(isColliding == true && closestEnemy.getDistanceFrom(player) != 0.0){
+        if(isColliding && closestEnemy.getDistanceFrom(player) != 0.0){
             isColliding = false;
         }
     }
@@ -103,7 +104,7 @@ public class EnemyController implements IAlarmListener {
      */
     @Override
     public void triggerAlarm(String alarmName) {
-        if (world.getGameStarted() && alarmName == enemySpawnAlarmName) {
+        if (world.getGameStarted() && alarmName.equals(enemySpawnAlarmName)) {
             Enemy.Color enemyColor = Enemy.Color.Yellow;
             int score = world.getScoreboard().getScore();
 

@@ -19,7 +19,7 @@ public class CoronaMayhem extends GameEngine {
     private Player player = new Player(this, 1);
     private EnemyController enemyCtrl = new EnemyController(this);
     private Scoreboard scoreboard = new Scoreboard(this);
-    private Menu menu = new Menu(this);
+    private final Menu menu = new Menu(this);
     private boolean gameStarted = true;
 
     public static void main(String[] args) {
@@ -74,7 +74,7 @@ public class CoronaMayhem extends GameEngine {
     @Override
     public void pause() {
         pauseGame();
-        if(player.lives >= 0) {
+        if(player.getLives() >= 0) {
             menu.showPauseScreen();
         } else {
             menu.showDeathScreen();
@@ -83,11 +83,12 @@ public class CoronaMayhem extends GameEngine {
     }
 
     /**
-     * Resumes the game and hides the menu
+     * Resumes the game and hides the menu if lives >= 0
+     * If not, the game is over and gets reset
      */
     @Override
     public void resume() {
-        if (player.lives < 0) {
+        if (player.getLives() < 0) {
             reset();
         }
         menu.hide();
@@ -95,13 +96,18 @@ public class CoronaMayhem extends GameEngine {
         gameStarted = true;
     }
 
+    /**
+     * Sets the objects to their default values and resets the EnemyController
+     * Also re-runs setupGame();
+     */
     public void reset() {
+        System.out.println("Reset game!");
         deleteAllGameOBjects();
         enemyCtrl = new EnemyController(this);
         getEnemyCtrl().getAllEnemies().clear();
         player = new Player(this, 1);
         scoreboard = new Scoreboard(this);
-        scoreboard.reset().update();
+        scoreboard.reset();
         setupGame();
     }
 

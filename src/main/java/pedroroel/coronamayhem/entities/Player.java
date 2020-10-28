@@ -3,8 +3,6 @@ package pedroroel.coronamayhem.entities;
 import nl.han.ica.oopg.objects.Sprite;
 import pedroroel.coronamayhem.CoronaMayhem;
 
-import java.util.List;
-
 public class Player extends Person {
     private final int size = 25;
 
