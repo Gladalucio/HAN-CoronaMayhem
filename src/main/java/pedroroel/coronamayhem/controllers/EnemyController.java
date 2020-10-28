@@ -12,62 +12,35 @@ import java.util.List;
 public class EnemyController implements IAlarmListener {
     private CoronaMayhem world;
     private List<Enemy> enemiesList = new ArrayList<Enemy>();
+    private final float baseSpawnDelay = 3;
     private float spawnDelay = 3;
     private int maxEnemies = 5;
     private boolean isColliding = false;
-    private static Enemy closestEnemy;
-    private Boolean enemyKilled = false;
+    private Enemy closestEnemy;
 
     public EnemyController(CoronaMayhem world) {
         this.world = world;
-    }
-
-    public void init() {
-        enemiesList.add(new Enemy(world, Enemy.Color.Red, Enemy.SpawnSide.Left));
-        enemiesList.add(new Enemy(world, Enemy.Color.Red, Enemy.SpawnSide.Right));
     }
 
     /**
      * Starts an alarm (timeout) for spawning an enemy
      */
     public void startAlarm() {
+        spawnDelay = enemiesList.size() < 3 ? 0.5f : baseSpawnDelay;
         Alarm alarm = new Alarm("enemy", spawnDelay);
         alarm.addTarget(this);
         alarm.start();
     }
 
     /**
-     * returns true if collision is currently happening between player and enemy
-     * @return Boolean
-     */
-    public boolean getIsColliding()
-    {
-        return isColliding;
-    }
-
-    /**
-     * returns the closest enemy to the player
-     * @return Enemy
-     */
-    public Enemy getClosestEnemy()
-    {
-        return closestEnemy;
-    }
-
-    /**
-     * returns true when the player collides with an enemy at the right angle to kill it
-     * @return boolean
-     */
-    public boolean getEnemyKilled()
-    {
-        return enemyKilled;
-    }
-
-    /**
-     * calculates and picks the current closest enemy to the player and returns a true on collision
+     * calculates and picks the current closest enemy to the player and handles possible collision
      */
     public void entityCollisionOccurred(Player player)
     {
+        if (enemiesList.size() < 1) {
+            return;
+        }
+
         double closestEnemyDistance = 10000.0;
 
         for(Enemy ce : enemiesList)
@@ -83,11 +56,8 @@ public class EnemyController implements IAlarmListener {
             if(player.getAngleFrom(closestEnemy) >= 160 && player.getAngleFrom(closestEnemy) <= 220)
             {
                 System.out.println("Healed a patient!");
-                enemyKilled = true;
                 isColliding = true;
                 closestEnemy.decreaseLives();
-//                world.deleteGameObject(closestEnemy);
-//                enemiesList.remove(closestEnemy);
                 world.getScoreboard().increase();
             }else {
                 System.out.println("Infected!");
@@ -98,7 +68,6 @@ public class EnemyController implements IAlarmListener {
         }
         if(isColliding == true && closestEnemy.getDistanceFrom(player) != 0.0){
             isColliding = false;
-            enemyKilled = false;
         }
     }
 
@@ -106,9 +75,19 @@ public class EnemyController implements IAlarmListener {
      * Restarts a previously set alarm unless the enemy limit has been exceeded
      */
     private void restartAlarm() {
-        if (enemiesList.size() <= maxEnemies) {
+        if (enemiesList.size() < maxEnemies) {
+            System.out.println("Start");
             startAlarm();
+        } else {
+            System.out.println("Delayed start");
+            restartAlarmDelayed();
         }
+    }
+
+    private void restartAlarmDelayed() {
+        Alarm alarm = new Alarm("delayedSpawn", spawnDelay);
+        alarm.addTarget(this);
+        alarm.start();
     }
 
     public List<Enemy> getAllEnemies()
@@ -122,8 +101,19 @@ public class EnemyController implements IAlarmListener {
      */
     @Override
     public void triggerAlarm(String alarmName) {
-        if (world.getGameStarted()) {
-            enemiesList.add(new Enemy(world, Enemy.Color.Yellow));
+        if (world.getGameStarted() && alarmName == "enemy") {
+            Enemy.Color enemyColor = Enemy.Color.Yellow;
+            int score = world.getScoreboard().getScore();
+
+            if (score > 10) {
+                enemyColor = Enemy.Color.Red;
+                maxEnemies = 10;
+            } else if (score > 5) {
+                enemyColor = Enemy.Color.Orange;
+                maxEnemies = 7;
+            }
+
+            enemiesList.add(new Enemy(world, enemyColor));
         }
         restartAlarm();
     }

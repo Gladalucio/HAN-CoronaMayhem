@@ -29,19 +29,12 @@ public class CoronaMayhem extends GameEngine {
     }
 
     //region Getters
-    public Menu getMenu() {
-        return menu;
-    }
-
     public Scoreboard getScoreboard() {
         return scoreboard;
     }
 
     public Player getPlayer() {
         return player;
-    }
-    public void setPlayerLives(int lives){
-        player.lives = lives;
     }
 
     public EnemyController getEnemyCtrl() {
@@ -50,12 +43,6 @@ public class CoronaMayhem extends GameEngine {
 
     public boolean getGameStarted() {
         return gameStarted;
-    }
-    //endregion
-
-    //region Setters
-    public void setGameStarted(boolean gameStarted) {
-        this.gameStarted = gameStarted;
     }
     //endregion
 
@@ -71,7 +58,6 @@ public class CoronaMayhem extends GameEngine {
         initializeTileMap();
 
         addGameObject(player, 590, 500);
-        enemyCtrl.init();
         enemyCtrl.startAlarm();
         scoreboard.show();
         pause();
@@ -88,10 +74,11 @@ public class CoronaMayhem extends GameEngine {
     @Override
     public void pause() {
         pauseGame();
-        if(player.lives >= 0)
+        if(player.lives >= 0) {
             menu.showPauseScreen();
-        else
+        } else {
             menu.showDeathScreen();
+        }
         gameStarted = false;
     }
 
@@ -101,17 +88,21 @@ public class CoronaMayhem extends GameEngine {
     @Override
     public void resume() {
         if (player.lives < 0) {
-            deleteAllGameOBjects();
-            getEnemyCtrl().getAllEnemies().clear();
-            player = new Player(this, 1);
-            scoreboard = new Scoreboard(this);
-            scoreboard.reset().update();
-            setupGame();
+            reset();
         }
         menu.hide();
         resumeGame();
         gameStarted = true;
+    }
 
+    public void reset() {
+        deleteAllGameOBjects();
+        enemyCtrl = new EnemyController(this);
+        getEnemyCtrl().getAllEnemies().clear();
+        player = new Player(this, 1);
+        scoreboard = new Scoreboard(this);
+        scoreboard.reset().update();
+        setupGame();
     }
 
     /**
