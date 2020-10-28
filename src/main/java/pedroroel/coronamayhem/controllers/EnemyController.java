@@ -2,6 +2,7 @@ package pedroroel.coronamayhem.controllers;
 
 import nl.han.ica.oopg.alarm.Alarm;
 import nl.han.ica.oopg.alarm.IAlarmListener;
+import nl.han.ica.oopg.objects.GameObject;
 import pedroroel.coronamayhem.CoronaMayhem;
 import pedroroel.coronamayhem.entities.Enemy;
 import pedroroel.coronamayhem.entities.Player;
@@ -41,7 +42,7 @@ public class EnemyController implements IAlarmListener {
     /**
      * calculates and picks the current closest enemy to the player and handles possible collision
      */
-    public void entityCollisionOccurred(Player player)
+    public void entityCollisionOccurred(GameObject objectA, GameObject objectB)
     {
         if (enemiesList.size() < 1) {
             return;
@@ -51,15 +52,15 @@ public class EnemyController implements IAlarmListener {
 
         for(Enemy ce : enemiesList)
         {
-            if(ce.getDistanceFrom(player) <= closestEnemyDistance)
+            if(ce.getDistanceFrom(objectA) <= closestEnemyDistance)
             {
-                closestEnemyDistance = ce.getDistanceFrom(player);
+                closestEnemyDistance = ce.getDistanceFrom(objectA);
                 closestEnemy = ce;
             }
         }
-        if(!isColliding && closestEnemy.getDistanceFrom(player) == 0.0)
+        if(isColliding == false && closestEnemy.getDistanceFrom(objectA) == 0.0)
         {
-            if(player.getAngleFrom(closestEnemy) >= 160 && player.getAngleFrom(closestEnemy) <= 220)
+            if(objectA.getAngleFrom(closestEnemy) >= 160 && objectA.getAngleFrom(closestEnemy) <= 220)
             {
                 System.out.println("Healed a patient!");
                 isColliding = true;
@@ -68,11 +69,11 @@ public class EnemyController implements IAlarmListener {
             }else {
                 System.out.println("Infected!");
                 isColliding = true;
-                player.decreaseLives();
+                ((Player)objectA).decreaseLives();
                 world.getScoreboard().decrease();
             }
         }
-        if(isColliding && closestEnemy.getDistanceFrom(player) != 0.0){
+        if(isColliding == true && closestEnemy.getDistanceFrom(objectA) != 0.0){
             isColliding = false;
         }
     }

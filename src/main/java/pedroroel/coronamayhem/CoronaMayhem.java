@@ -64,8 +64,11 @@ public class CoronaMayhem extends GameEngine {
     }
 
     @Override
+    /**
+     * @param player the player.
+     */
     public void update() {
-        enemyCtrl.entityCollisionOccurred(player);
+        enemyCtrl.entityCollisionOccurred(player, player);
     }
 
     /**
