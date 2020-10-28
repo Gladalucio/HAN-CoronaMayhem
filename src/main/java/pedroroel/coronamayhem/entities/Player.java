@@ -1,10 +1,12 @@
 package pedroroel.coronamayhem.entities;
 
 import nl.han.ica.oopg.objects.Sprite;
+import nl.han.ica.oopg.sound.Sound;
 import pedroroel.coronamayhem.CoronaMayhem;
 
 public class Player extends Person {
     private final int size = 25;
+    private final Sound hitSound = new Sound(world, world.baseAssetPath + "sounds/player_hit.mp3");
 
     /**
      * New player has his sprite, currentFrameIndex and gravity set
@@ -43,10 +45,16 @@ public class Player extends Person {
 
     @Override
     public void decreaseLives() {
+        playHitSound();
         super.decreaseLives();
         if (lives < 0) {
             world.pause();
         }
+    }
+
+    private void playHitSound() {
+        hitSound.rewind();
+        hitSound.play();
     }
 
     public int returnCurrentFrameIndexOffset() {

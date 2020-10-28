@@ -1,6 +1,7 @@
 package pedroroel.coronamayhem.entities;
 
 import nl.han.ica.oopg.objects.Sprite;
+import nl.han.ica.oopg.sound.Sound;
 import pedroroel.coronamayhem.CoronaMayhem;
 
 public class Enemy extends Person {
@@ -16,6 +17,8 @@ public class Enemy extends Person {
 
     private Color enemyColor;
     private SpawnSide spawnSide;
+    private final Sound doorSound = new Sound(world, world.baseAssetPath + "sounds/enemy_door.mp3");
+    private final Sound healedSound = new Sound(world, world.baseAssetPath + "sounds/enemy_healed.mp3");
 
     public Enemy(CoronaMayhem world, Color enemyColor) {
         super(world, new Sprite(world.baseAssetPath + "images/enemies.png"), 6);
@@ -42,11 +45,16 @@ public class Enemy extends Person {
     @Override
     public void decreaseLives() {
         super.decreaseLives();
+        playHealedSound();
         if (lives < 0) {
             world.getEnemyCtrl().removeEnemy(this);
         }
     }
 
+    /**
+     * Returns the offset the currentFrameOffset needs to show the correct sprite
+     * EnemyColor and currentFrameIndexOffset are based on the lives the enemy has left
+     */
     public int returnCurrentFrameIndexOffset() {
         switch(lives) {
             case 2:
@@ -95,6 +103,7 @@ public class Enemy extends Person {
             return;
         }
 
+        playDoorSound();
         setxSpeed(entitySpeed);
         setY(19);
         world.addGameObject(this);
@@ -107,8 +116,19 @@ public class Enemy extends Person {
      */
     private void checkForRespawn() {
         if (getY() > (world.height - this.height * 1.5)) {
+            playDoorSound();
             setySpeed(0);
             setY(19);
         }
+    }
+
+    public void playDoorSound() {
+        doorSound.rewind();
+        doorSound.play();
+    }
+
+    public void playHealedSound() {
+        healedSound.rewind();
+        healedSound.play();
     }
 }
