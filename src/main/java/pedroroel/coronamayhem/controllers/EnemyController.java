@@ -62,8 +62,8 @@ public class EnemyController implements IAlarmListener {
             }else {
                 System.out.println("Infected!");
                 isColliding = true;
-                world.getScoreboard().decrease();
                 player.decreaseLives();
+                world.getScoreboard().decrease();
             }
         }
         if(isColliding == true && closestEnemy.getDistanceFrom(player) != 0.0){
@@ -76,10 +76,8 @@ public class EnemyController implements IAlarmListener {
      */
     private void restartAlarm() {
         if (enemiesList.size() < maxEnemies) {
-            System.out.println("Start");
             startAlarm();
         } else {
-            System.out.println("Delayed start");
             restartAlarmDelayed();
         }
     }
