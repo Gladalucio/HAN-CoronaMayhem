@@ -1,7 +1,6 @@
 package pedroroel.coronamayhem.controllers;
 
 import nl.han.ica.oopg.alarm.Alarm;
-import nl.han.ica.oopg.alarm.IAlarmListener;
 import nl.han.ica.oopg.objects.GameObject;
 import pedroroel.coronamayhem.CoronaMayhem;
 import pedroroel.coronamayhem.entities.Enemy;
@@ -10,8 +9,7 @@ import pedroroel.coronamayhem.entities.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnemyController implements IAlarmListener {
-    private final CoronaMayhem world;
+public class EnemyController extends Controller{
     private final List<Enemy> enemiesList = new ArrayList<>();
     private final String enemySpawnAlarmName = "enemy";
     private float spawnDelay = 3;
@@ -20,7 +18,7 @@ public class EnemyController implements IAlarmListener {
     private Enemy closestEnemy;
 
     public EnemyController(CoronaMayhem world) {
-        this.world = world;
+        super(world);
     }
 
     public List<Enemy> getAllEnemies() {
@@ -81,7 +79,7 @@ public class EnemyController implements IAlarmListener {
     /**
      * Restarts a previously set alarm unless the enemy limit has been exceeded
      */
-    private void restartAlarm() {
+    protected void restartAlarm() {
         if (enemiesList.size() < maxEnemies) {
             startAlarm();
         } else {
