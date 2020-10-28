@@ -43,16 +43,16 @@ public class Player extends Person {
         }
     }
 
-    public void setCurrentFrameIndexOffset() {
-        if (lives > 0) {
-            currentFrameIndexOffset = 0;
-        } else if (lives == 0){
-            currentFrameIndexOffset = 2;
-        } else {
-            /* Lives have reached a below 0 point. The Player is dead. */
+    @Override
+    public void decreaseLives() {
+        super.decreaseLives();
+        if (lives < 0) {
             world.pause();
         }
-        setCurrentFrameIndex(getCurrentFrameIndex());
+    }
+
+    public int returnCurrentFrameIndexOffset() {
+        return lives > 0 ? 0 : 2;
     }
 
     /**

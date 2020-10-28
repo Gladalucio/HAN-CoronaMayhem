@@ -50,30 +50,24 @@ public class Enemy extends Person {
 
     @Override
     public void decreaseLives() {
-        if (lives == 0) {
-            world.deleteGameObject(this);
-            world.getEnemyCtrl().removeFromEnemiesList(this);
-        } else {
-            super.decreaseLives();
+        super.decreaseLives();
+        if (lives < 0) {
+            world.getEnemyCtrl().removeEnemy(this);
         }
     }
 
-    public void setCurrentFrameIndexOffset() {
+    public int returnCurrentFrameIndexOffset() {
         switch(lives) {
             case 2:
                 enemyColor = Color.Red;
-                currentFrameIndexOffset = 4;
-                break;
+                return 4;
             case 1:
                 enemyColor = Color.Orange;
-                currentFrameIndexOffset = 2;
-                break;
-            case 0:
+                return 2;
+            default:
                 enemyColor = Color.Yellow;
-                currentFrameIndexOffset = 0;
-                break;
+                return 0;
         }
-        setCurrentFrameIndex(getCurrentFrameIndex());
     }
 
     private void determineSpawnSide() {
@@ -113,7 +107,7 @@ public class Enemy extends Person {
         setxSpeed(entitySpeed);
         setY(19);
         world.addGameObject(this);
-        setCurrentFrameIndexOffset();
+        setCurrentFrameIndex(getCurrentFrameIndex());
     }
 
     /**

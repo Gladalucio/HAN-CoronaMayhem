@@ -16,7 +16,6 @@ public abstract class Person extends AnimatedSpriteObject implements ICollidable
     protected CoronaMayhem world;
     protected float entitySpeed = 2f;
     public int lives = 1;
-    protected int currentFrameIndexOffset;
 
     public Person(CoronaMayhem world, Sprite sprite, int totalFrames) {
         super(sprite, totalFrames);
@@ -27,26 +26,26 @@ public abstract class Person extends AnimatedSpriteObject implements ICollidable
     @Override
     public void setCurrentFrameIndex(int currentFrameIndex) {
         currentFrameIndex %= 2;
-        super.setCurrentFrameIndex(currentFrameIndex + currentFrameIndexOffset);
+        super.setCurrentFrameIndex(currentFrameIndex + returnCurrentFrameIndexOffset());
     }
 
     public void increaseLives() {
         lives += 1;
-        setCurrentFrameIndexOffset();
+        setCurrentFrameIndex(getCurrentFrameIndex());
     }
 
     public void decreaseLives() {
         lives -= 1;
-        setCurrentFrameIndexOffset();
+        setCurrentFrameIndex(getCurrentFrameIndex());
     }
 
-    public abstract void setCurrentFrameIndexOffset();
+    public abstract int returnCurrentFrameIndexOffset();
 
     /**
      * Function added to stop the Y-speed going through the roof.
      * The y-speed of the entity is 0,66th so it's harder to notice
      * */
-    protected void resetYSpeed() {
+    protected void limitYSpeed() {
         if (getySpeed() > 20) {
             setySpeed(getySpeed() / 3 * 2);
         }
@@ -57,7 +56,7 @@ public abstract class Person extends AnimatedSpriteObject implements ICollidable
         for (CollidedTile ct : collidedTiles) {
             if (ct.getTile() instanceof GameTile) {
                 try {
-                    resetYSpeed();
+                    limitYSpeed();
                     PVector vector = world.getTileMap().getTilePixelLocation(ct.getTile());
 
                     if (CollisionSide.TOP.equals(ct.getCollisionSide())) {
