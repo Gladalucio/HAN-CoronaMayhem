@@ -6,6 +6,7 @@ import nl.han.ica.oopg.objects.GameObject;
 import pedroroel.coronamayhem.CoronaMayhem;
 import pedroroel.coronamayhem.entities.Enemy;
 import pedroroel.coronamayhem.entities.Player;
+import pedroroel.coronamayhem.objects.LockDown;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,7 @@ public class EnemyController implements IAlarmListener {
      */
     public void entityCollisionOccurred(GameObject objectA, GameObject objectB)
     {
+        System.out.println(objectA.getDistanceFrom(objectB));
         if (enemiesList.size() < 1) {
             return;
         }
@@ -56,6 +58,14 @@ public class EnemyController implements IAlarmListener {
             {
                 closestEnemyDistance = ce.getDistanceFrom(objectA);
                 closestEnemy = ce;
+            }
+        }
+        if(objectA.getDistanceFrom(objectB) <= 0.0)
+        {
+            System.out.println("wtf");
+            for(Enemy ae : getAllEnemies())
+            {
+                ae.decreaseLives();
             }
         }
         if(isColliding == false && closestEnemy.getDistanceFrom(objectA) == 0.0)

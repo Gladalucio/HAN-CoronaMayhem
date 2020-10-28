@@ -8,6 +8,7 @@ import nl.han.ica.oopg.view.View;
 import pedroroel.coronamayhem.entities.Player;
 import pedroroel.coronamayhem.controllers.EnemyController;
 import pedroroel.coronamayhem.objects.GameTile;
+import pedroroel.coronamayhem.objects.LockDown;
 import pedroroel.coronamayhem.objects.Menu;
 import pedroroel.coronamayhem.objects.Scoreboard;
 import processing.core.PApplet;
@@ -19,6 +20,7 @@ public class CoronaMayhem extends GameEngine {
     private Player player = new Player(this, 1);
     private EnemyController enemyCtrl = new EnemyController(this);
     private Scoreboard scoreboard = new Scoreboard(this);
+    private LockDown lockDownButton = new LockDown(this);
     private final Menu menu = new Menu(this);
     private boolean gameStarted = true;
 
@@ -56,11 +58,11 @@ public class CoronaMayhem extends GameEngine {
 
         createView(worldWidth, worldHeight);
         initializeTileMap();
-
         addGameObject(player, 590, 500);
         enemyCtrl.startAlarm();
         scoreboard.show();
         pause();
+        lockDownButton.showLargeButton();
     }
 
     @Override
@@ -68,7 +70,7 @@ public class CoronaMayhem extends GameEngine {
      * @param player the player.
      */
     public void update() {
-        enemyCtrl.entityCollisionOccurred(player, player);
+        enemyCtrl.entityCollisionOccurred(player, lockDownButton);
     }
 
     /**
