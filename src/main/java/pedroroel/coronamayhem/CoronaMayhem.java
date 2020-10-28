@@ -100,23 +100,17 @@ public class CoronaMayhem extends GameEngine {
      */
     @Override
     public void resume() {
-        if(player.lives >= 0) {
-            menu.hide();
-            resumeGame();
-            gameStarted = true;
-        }
-        else
-        {
+        if (player.lives < 0) {
             deleteAllGameOBjects();
             getEnemyCtrl().getAllEnemies().clear();
             player = new Player(this, 1);
             scoreboard = new Scoreboard(this);
             scoreboard.reset().update();
             setupGame();
-            menu.hide();
-            resumeGame();
-            gameStarted = true;
         }
+        menu.hide();
+        resumeGame();
+        gameStarted = true;
 
     }
 
