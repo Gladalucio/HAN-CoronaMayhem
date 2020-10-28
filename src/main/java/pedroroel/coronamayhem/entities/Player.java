@@ -11,7 +11,7 @@ public class Player extends Person {
      * @param world contains a CoronaMayhem reference
      */
     public Player(CoronaMayhem world, int lives) {
-        super(world, new Sprite(world.baseImagePath + "player.png"), 4);
+        super(world, new Sprite(world.baseAssetPath + "images/player.png"), 4);
         this.lives = lives;
         this.world = world;
         setCurrentFrameIndex(1);

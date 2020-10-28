@@ -18,7 +18,7 @@ public class Enemy extends Person {
     private SpawnSide spawnSide;
 
     public Enemy(CoronaMayhem world, Color enemyColor) {
-        super(world, new Sprite(world.baseImagePath + "enemies.png"), 6);
+        super(world, new Sprite(world.baseAssetPath + "images/enemies.png"), 6);
         this.enemyColor = enemyColor;
         determineSpawnSide();
         spawn();

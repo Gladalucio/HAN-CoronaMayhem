@@ -15,7 +15,7 @@ import processing.core.PApplet;
 // HANICA OOPG JAVADOC: https://hanica.github.io/oopg/
 
 public class CoronaMayhem extends GameEngine {
-    public final String baseImagePath = "src/main/java/pedroroel/coronamayhem/assets/images/";
+    public final String baseAssetPath = "src/main/java/pedroroel/coronamayhem/assets/";
     private Player player = new Player(this, 1);
     private EnemyController enemyCtrl = new EnemyController(this);
     private Scoreboard scoreboard = new Scoreboard(this);
@@ -121,7 +121,7 @@ public class CoronaMayhem extends GameEngine {
      */
     private void createView(int screenWidth, int screenHeight) {
         View view = new View(screenWidth, screenHeight);
-        view.setBackground(loadImage(baseImagePath + "background.jpg"));
+        view.setBackground(loadImage(baseAssetPath + "images/background.jpg"));
 
         setView(view);
         size(screenWidth, screenHeight);
