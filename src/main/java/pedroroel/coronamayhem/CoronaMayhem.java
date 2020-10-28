@@ -40,6 +40,9 @@ public class CoronaMayhem extends GameEngine {
     public Player getPlayer() {
         return player;
     }
+    public void setPlayerLives(int lives){
+        player.lives = lives;
+    }
 
     public EnemyController getEnemyCtrl() {
         return enemyCtrl;
@@ -85,7 +88,10 @@ public class CoronaMayhem extends GameEngine {
     @Override
     public void pause() {
         pauseGame();
-        menu.show();
+        if(player.lives >= 0)
+            menu.showPauseScreen();
+        else
+            menu.showDeathScreen();
         gameStarted = false;
     }
 
@@ -94,9 +100,24 @@ public class CoronaMayhem extends GameEngine {
      */
     @Override
     public void resume() {
-        menu.hide();
-        resumeGame();
-        gameStarted = true;
+        if(player.lives >= 0) {
+            menu.hide();
+            resumeGame();
+            gameStarted = true;
+        }
+        else
+        {
+            deleteAllGameOBjects();
+            getEnemyCtrl().getAllEnemies().clear();
+            player = new Player(this, 1);
+            scoreboard = new Scoreboard(this);
+            scoreboard.reset().update();
+            setupGame();
+            menu.hide();
+            resumeGame();
+            gameStarted = true;
+        }
+
     }
 
     /**
