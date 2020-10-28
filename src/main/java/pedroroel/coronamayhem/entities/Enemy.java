@@ -1,10 +1,10 @@
 package pedroroel.coronamayhem.entities;
 
 import nl.han.ica.oopg.objects.Sprite;
+import nl.han.ica.oopg.sound.Sound;
 import pedroroel.coronamayhem.CoronaMayhem;
 
 public class Enemy extends Person {
-
     public enum Color {
         Yellow,
         Orange,
@@ -17,18 +17,13 @@ public class Enemy extends Person {
 
     private Color enemyColor;
     private SpawnSide spawnSide;
+    private final Sound doorSound = new Sound(world, world.baseAssetPath + "sounds/enemy_door.mp3");
+    private final Sound healedSound = new Sound(world, world.baseAssetPath + "sounds/enemy_healed.mp3");
 
     public Enemy(CoronaMayhem world, Color enemyColor) {
-        super(world, new Sprite("src/main/java/pedroroel/coronamayhem/assets/images/enemy_" + enemyColor.toString().toLowerCase() + ".png"), 2);
+        super(world, new Sprite(world.baseAssetPath + "images/enemies.png"), 6);
         this.enemyColor = enemyColor;
         determineSpawnSide();
-        spawn();
-    }
-
-    public Enemy(CoronaMayhem world, Color enemyColor, SpawnSide spawnSide) {
-        super(world, new Sprite("src/main/java/pedroroel/coronamayhem/assets/images/enemy_" + enemyColor.toString().toLowerCase() + ".png"), 2);
-        this.enemyColor = enemyColor;
-        this.spawnSide = spawnSide;
         spawn();
     }
 
@@ -38,12 +33,39 @@ public class Enemy extends Person {
      */
     @Override
     public void update() {
-        if (getX() + getWidth() <= 0) { // Hits left wall
+        if (getX() + getWidth() <= 0) { /* Hits left wall, reappears on the other side */
             setX(world.width - 100);
             checkForRespawn();
-        } else if (getX() >= world.width) { // Hits right wall
+        } else if (getX() >= world.width) { /* Hits right wall, reappears on the other side */
             setX(35);
             checkForRespawn();
+        }
+    }
+
+    @Override
+    public void decreaseLives() {
+        super.decreaseLives();
+        playHealedSound();
+        if (lives < 0) {
+            world.getEnemyCtrl().removeEnemy(this);
+        }
+    }
+
+    /**
+     * Returns the offset the currentFrameOffset needs to show the correct sprite
+     * EnemyColor and currentFrameIndexOffset are based on the lives the enemy has left
+     */
+    public int returnCurrentFrameIndexOffset() {
+        switch(lives) {
+            case 2:
+                enemyColor = Color.Red;
+                return 4;
+            case 1:
+                enemyColor = Color.Orange;
+                return 2;
+            default:
+                enemyColor = Color.Yellow;
+                return 0;
         }
     }
 
@@ -55,13 +77,25 @@ public class Enemy extends Person {
      * Spawns an enemy facing and moving the correct way after deciding it's spawn side
      */
     private void spawn() {
+        switch(enemyColor) {
+            case Red:
+                lives = 2;
+                break;
+            case Orange:
+                lives = 1;
+                break;
+            case Yellow:
+                lives = 0;
+                break;
+        }
+
         if (spawnSide == SpawnSide.Left) {
             setCurrentFrameIndex(1);
-            setxSpeed((float) (speed + Math.random() / 2));
+            entitySpeed = (float) (entitySpeed + Math.random() / 2);
             setX(35);
         } else if (spawnSide == SpawnSide.Right){
             setCurrentFrameIndex(0);
-            setxSpeed(-(float) (speed + Math.random() / 2));
+            entitySpeed = (float) -(entitySpeed + Math.random() / 2);
             setX(world.width - 100);
         } else {
             determineSpawnSide();
@@ -69,19 +103,32 @@ public class Enemy extends Person {
             return;
         }
 
+        playDoorSound();
+        setxSpeed(entitySpeed);
         setY(19);
         world.addGameObject(this);
+        setCurrentFrameIndex(getCurrentFrameIndex());
     }
 
-    // NOT WORKING PROPERLY, respawns lower down at times
     /**
      * Checks if character has to be respawned after reaching a wall and coming out on the other side
-     * If an enemy is on the bottom row, it should be respawned on the very top
+     * If an enemy is on the bottom row, it should be respawned at the very top row
      */
     private void checkForRespawn() {
         if (getY() > (world.height - this.height * 1.5)) {
-            System.out.println("respawn!");
-            setY(0);
+            playDoorSound();
+            setySpeed(0);
+            setY(19);
         }
+    }
+
+    public void playDoorSound() {
+        doorSound.rewind();
+        doorSound.play();
+    }
+
+    public void playHealedSound() {
+        healedSound.rewind();
+        healedSound.play();
     }
 }

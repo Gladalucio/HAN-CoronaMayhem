@@ -14,47 +14,58 @@ import java.util.List;
 
 public abstract class Person extends AnimatedSpriteObject implements ICollidableWithTiles {
     protected CoronaMayhem world;
-    protected float speed = 3f;
+    protected float entitySpeed = 2f;
+    protected int lives = 1;
 
     public Person(CoronaMayhem world, Sprite sprite, int totalFrames) {
         super(sprite, totalFrames);
         this.world = world;
-        setGravity(0.1f);
+        setGravity(0.3f);
     }
+
+    public int getLives() {
+        return lives;
+    }
+
+    @Override
+    public void setCurrentFrameIndex(int currentFrameIndex) {
+        currentFrameIndex %= 2;
+        super.setCurrentFrameIndex(currentFrameIndex + returnCurrentFrameIndexOffset());
+    }
+
+    public void increaseLives() {
+        lives += 1;
+        setCurrentFrameIndex(getCurrentFrameIndex());
+    }
+
+    public void decreaseLives() {
+        lives -= 1;
+        setCurrentFrameIndex(getCurrentFrameIndex());
+    }
+
+    public abstract int returnCurrentFrameIndexOffset();
 
     /**
      * Function added to stop the Y-speed going through the roof.
      * The y-speed of the entity is 0,66th so it's harder to notice
      * */
-
-    protected void resetYSpeed() {
-        if (getySpeed() > 5) {
+    protected void limitYSpeed() {
+        if (getySpeed() > 20) {
             setySpeed(getySpeed() / 3 * 2);
         }
     }
-
 
     @Override
     public void tileCollisionOccurred(List<CollidedTile> collidedTiles) {
         for (CollidedTile ct : collidedTiles) {
             if (ct.getTile() instanceof GameTile) {
                 try {
-                    resetYSpeed();
+                    limitYSpeed();
                     PVector vector = world.getTileMap().getTilePixelLocation(ct.getTile());
 
                     if (CollisionSide.TOP.equals(ct.getCollisionSide())) {
                         setY(vector.y - getHeight());
-
-                        // On collision and moving downward, give enemies a random direction to walk in
-                        if (getDirection() == 180 && this instanceof Enemy) {
-                            boolean goRight = Math.random() < 0.5;
-                            setDirectionSpeed(goRight ? 90 : 270, speed);
-                            setCurrentFrameIndex(goRight ? 1 : 0);
-                        }
-                    } else if (CollisionSide.BOTTOM.equals(ct.getCollisionSide())) {
-//                        setDirectionSpeed(180, speed);
                     }
-                    // Watch out: Adding "CollisionSide.RIGHT" and ".LEFT" results in weird behavior
                 } catch (TileNotFoundException e) {
                     e.printStackTrace();
                 }

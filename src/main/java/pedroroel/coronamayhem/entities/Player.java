@@ -1,21 +1,23 @@
 package pedroroel.coronamayhem.entities;
 
 import nl.han.ica.oopg.objects.Sprite;
+import nl.han.ica.oopg.sound.Sound;
 import pedroroel.coronamayhem.CoronaMayhem;
 
-import java.util.List;
-
 public class Player extends Person {
-    final int size = 25;
-
+    private final int size = 25;
+    private final Sound hitSound = new Sound(world, world.baseAssetPath + "sounds/player_hit.mp3");
 
     /**
      * New player has his sprite, currentFrameIndex and gravity set
      * @param world contains a CoronaMayhem reference
      */
-    public Player(CoronaMayhem world) {
-        super(world, new Sprite("src/main/java/pedroroel/coronamayhem/assets/images/doctor_mask.png"), 2);
+    public Player(CoronaMayhem world, int lives) {
+        super(world, new Sprite(world.baseAssetPath + "images/player.png"), 4);
+        this.lives = lives;
+        this.world = world;
         setCurrentFrameIndex(1);
+        setFriction(0.025f);
     }
 
     /**
@@ -40,23 +42,66 @@ public class Player extends Person {
             setY(world.height - size);
         }
     }
+
+    @Override
+    public void decreaseLives() {
+        playHitSound();
+        super.decreaseLives();
+        if (lives < 0) {
+            world.pause();
+        }
+    }
+
+    private void playHitSound() {
+        hitSound.rewind();
+        hitSound.play();
+    }
+
+    public int returnCurrentFrameIndexOffset() {
+        return lives > 0 ? 0 : 2;
+    }
+
     /**
      * handles the pressed keys and starts an action if it's implemented
      * @param keyCode pressed character keyCode
      * @param key pressed character key
      */
-
     @Override
     public void keyPressed(int keyCode, char key) {
-        if (key == 'w') { // up
-            setDirectionSpeed(0, 3 * speed);
+        /* Enter starts the game */
+        if (keyCode == world.ENTER) {
+            if (world.getGameStarted()) {
+                world.pause();
+            } else {
+                world.resume();
+            }
         }
-        if (key == 'a') { // left
-            setDirectionSpeed(270, (float) (1.5 * speed));
+        /* Escape closes the game */
+        if (keyCode == world.ESC) {
+            world.exit();
+        }
+
+        /* If the game hasn't started yet, controlling the player shouldn't be possible */
+        if (!world.getGameStarted()) {
+            return;
+        }
+
+        float jumpSpeed = 16;
+        float directionalSpeed = 5;
+
+        /* Direction: Up */
+        if (key == 'w' && getDirection() != 0) {
+            setDirectionSpeed(0, jumpSpeed);
+        }
+
+        /* Direction: Left */
+        if (key == 'a') {
+            setDirectionSpeed(270, directionalSpeed);
             setCurrentFrameIndex(0);
         }
-        if (key == 'd') { // right
-            setDirectionSpeed(90, (float) (1.5 * speed));
+        /* Direction: Right */
+        if (key == 'd') {
+            setDirectionSpeed(90, directionalSpeed);
             setCurrentFrameIndex(1);
         }
     }

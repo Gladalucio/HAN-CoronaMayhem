@@ -5,28 +5,46 @@ import nl.han.ica.oopg.objects.Sprite;
 import nl.han.ica.oopg.tile.TileMap;
 import nl.han.ica.oopg.tile.TileType;
 import nl.han.ica.oopg.view.View;
-import pedroroel.coronamayhem.entities.Enemy;
 import pedroroel.coronamayhem.entities.Player;
 import pedroroel.coronamayhem.controllers.EnemyController;
 import pedroroel.coronamayhem.objects.GameTile;
-import pedroroel.coronamayhem.objects.TextObject;
+import pedroroel.coronamayhem.objects.Menu;
+import pedroroel.coronamayhem.objects.Scoreboard;
 import processing.core.PApplet;
 
 // HANICA OOPG JAVADOC: https://hanica.github.io/oopg/
 
 public class CoronaMayhem extends GameEngine {
-    private Player player;
-    private EnemyController enemyCtrl;
-    private static int score =0;
-    private TextObject scoreText = new TextObject("Score: " +score);
-    private int i = 0;
-
+    public final String baseAssetPath = "src/main/java/pedroroel/coronamayhem/assets/";
+    private Player player = new Player(this, 1);
+    private EnemyController enemyCtrl = new EnemyController(this);
+    private Scoreboard scoreboard = new Scoreboard(this);
+    private final Menu menu = new Menu(this);
+    private boolean gameStarted = true;
 
     public static void main(String[] args) {
         String[] processingArgs = {"CoronaMayhem"};
         CoronaMayhem coronaMayhem = new CoronaMayhem();
         PApplet.runSketch(processingArgs, coronaMayhem);
     }
+
+    //region Getters
+    public Scoreboard getScoreboard() {
+        return scoreboard;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public EnemyController getEnemyCtrl() {
+        return enemyCtrl;
+    }
+
+    public boolean getGameStarted() {
+        return gameStarted;
+    }
+    //endregion
 
     /**
      * Provides the setup for the game.
@@ -36,52 +54,64 @@ public class CoronaMayhem extends GameEngine {
         int worldWidth = 1200;
         int worldHeight = 900;
 
-        initializeTileMap();
-        createObjects();
-
         createView(worldWidth, worldHeight);
-    }
+        initializeTileMap();
 
+        addGameObject(player, 590, 500);
+        enemyCtrl.startAlarm();
+        scoreboard.show();
+        pause();
+    }
 
     @Override
+    /**
+     * @param player the player.
+     */
     public void update() {
-        enemyCtrl.entityCollisionOccurred(player);
-        calculateScore();
+        enemyCtrl.entityCollisionOccurred(player, player);
     }
-    /**
-     * checks if the player collides with an enemy and reduces his score by 1 each time
-     * TODO: move this ugly bit of code to enemyController and make it ~beautiful~
-     */
-    private void calculateScore()
-    {
-        if(enemyCtrl.getCollision() && i == 0)
-        {
-            if(enemyCtrl.getKilled() && i == 0)
-            {
-                i = 1;
-                score=score+1;
-            }else
-            {
-                i = 1;
-                score=score-1;
-            }
-            scoreText.setText("Score: " +score);
-            scoreText.update();
-        }
-        if(!enemyCtrl.getCollision() && i == 1)
-        {
-            i = 0;
-        }
-    }
-    /**
-     * Creates the objects used.
-     */
-    private void createObjects() {
-        player = new Player(this);
-        addGameObject(player, 590, 725);
 
+    /**
+     * Pauses the game and shows the menu
+     */
+    @Override
+    public void pause() {
+        pauseGame();
+        if(player.getLives() >= 0) {
+            menu.showPauseScreen();
+        } else {
+            menu.showDeathScreen();
+        }
+        gameStarted = false;
+    }
+
+    /**
+     * Resumes the game and hides the menu if lives >= 0
+     * If not, the game is over and gets reset
+     */
+    @Override
+    public void resume() {
+        if (player.getLives() < 0) {
+            reset();
+        }
+        menu.hide();
+        resumeGame();
+        gameStarted = true;
+    }
+
+    /**
+     * Sets the objects to their default values and resets the EnemyController
+     * Also re-runs setupGame();
+     */
+    public void reset() {
+        System.out.println("Reset game!");
+        deleteAllGameOBjects();
         enemyCtrl = new EnemyController(this);
-        addGameObject(scoreText, 540, 360);
+        getEnemyCtrl().getAllEnemies().clear();
+        player = new Player(this, 1);
+        scoreboard = new Scoreboard(this);
+        scoreboard.reset();
+        setupGame();
     }
 
     /**
@@ -91,7 +121,7 @@ public class CoronaMayhem extends GameEngine {
      */
     private void createView(int screenWidth, int screenHeight) {
         View view = new View(screenWidth, screenHeight);
-        view.setBackground(loadImage("src/main/java/pedroroel/coronamayhem/assets/images/background.jpg"));
+        view.setBackground(loadImage(baseAssetPath + "images/background.jpg"));
 
         setView(view);
         size(screenWidth, screenHeight);
@@ -106,7 +136,7 @@ public class CoronaMayhem extends GameEngine {
 
         TileType[] tileTypes = {boardTileType};
         int tileSize = 50;
-        int tilesMap[][] = { // x = 24, y = 18. backgroundsize should be 1200x900
+        int tilesMap[][] = { // x = 24, y = 18
                 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
                 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
                 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},

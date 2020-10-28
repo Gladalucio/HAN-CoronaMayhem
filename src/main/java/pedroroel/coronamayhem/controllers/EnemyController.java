@@ -2,6 +2,7 @@ package pedroroel.coronamayhem.controllers;
 
 import nl.han.ica.oopg.alarm.Alarm;
 import nl.han.ica.oopg.alarm.IAlarmListener;
+import nl.han.ica.oopg.objects.GameObject;
 import pedroroel.coronamayhem.CoronaMayhem;
 import pedroroel.coronamayhem.entities.Enemy;
 import pedroroel.coronamayhem.entities.Player;
@@ -10,104 +11,92 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EnemyController implements IAlarmListener {
-    private CoronaMayhem world;
-    private List<Enemy> enemiesList = new ArrayList<Enemy>();
+    private final CoronaMayhem world;
+    private final List<Enemy> enemiesList = new ArrayList<>();
+    private final String enemySpawnAlarmName = "enemy";
     private float spawnDelay = 3;
-    private int maxEnemies = 10;
-    private boolean collision = false;
-    private static Enemy closestEnemy;
-    private Boolean killed = false;
+    private int maxEnemies = 6;
+    private boolean isColliding = false;
+    private Enemy closestEnemy;
 
     public EnemyController(CoronaMayhem world) {
         this.world = world;
-        enemiesList.add(new Enemy(world, Enemy.Color.Yellow, Enemy.SpawnSide.Left));
-        enemiesList.add(new Enemy(world, Enemy.Color.Red, Enemy.SpawnSide.Right));
+    }
 
-        startAlarm();
+    public List<Enemy> getAllEnemies() {
+        return enemiesList;
     }
 
     /**
      * Starts an alarm (timeout) for spawning an enemy
      */
-    private void startAlarm() {
-        Alarm alarm = new Alarm("enemy", spawnDelay);
+    public void startAlarm() {
+        int baseSpawnDelay = 3;
+
+        spawnDelay = enemiesList.size() < 4 ? 0.75f : baseSpawnDelay;
+        Alarm alarm = new Alarm(enemySpawnAlarmName, spawnDelay);
         alarm.addTarget(this);
         alarm.start();
     }
 
     /**
-     * returns true if collision is currently happening between player and enemy
-     * @return Boolean
+     * calculates and picks the current closest enemy to the player and handles possible collision
      */
-    public boolean getCollision()
+    public void entityCollisionOccurred(GameObject objectA, GameObject objectB)
     {
-        return collision;
-    }
+        if (enemiesList.size() < 1) {
+            return;
+        }
 
-    /**
-     * returns the closest enemy to the player
-     * @return Enemy
-     */
-    public Enemy getClosestEnemy()
-    {
-        return closestEnemy;
-    }
-
-    /**
-     * returns true when the player colides with an enemy at the right angle to kill it
-     * @return boolean
-     */
-    public Boolean getKilled()
-    {
-        return killed;
-    }
-    /**
-     *
-     *
-     * calculates and picks the current closest enemy to the player and returns a true on collision
-     */
-    public void entityCollisionOccurred(Player player)
-    {
         double closestEnemyDistance = 10000.0;
 
         for(Enemy ce : enemiesList)
         {
-            if(ce.getDistanceFrom(player) <= closestEnemyDistance)
+            if(ce.getDistanceFrom(objectA) <= closestEnemyDistance)
             {
-                closestEnemyDistance = ce.getDistanceFrom(player);
+                closestEnemyDistance = ce.getDistanceFrom(objectA);
                 closestEnemy = ce;
             }
         }
-        if(collision == false && closestEnemy.getDistanceFrom(player) == 0.0)
+        if(isColliding == false && closestEnemy.getDistanceFrom(objectA) == 0.0)
         {
-            if(player.getAngleFrom(closestEnemy) >= 160 && player.getAngleFrom(closestEnemy) <= 220)
+            if(objectA.getAngleFrom(closestEnemy) >= 160 && objectA.getAngleFrom(closestEnemy) <= 220)
             {
-                killed = true;
-                collision = true;
-                world.deleteGameObject(closestEnemy);
-                enemiesList.remove(closestEnemy);
-                System.out.println("healed that sick SoaB!");
-
+                System.out.println("Healed a patient!");
+                isColliding = true;
+                closestEnemy.decreaseLives();
+                world.getScoreboard().increase();
             }else {
-                System.out.println("infected by that SoaB!");
-                collision = true;
+                System.out.println("Infected!");
+                isColliding = true;
+                ((Player)objectA).decreaseLives();
+                world.getScoreboard().decrease();
             }
         }
-        if(collision == true && closestEnemy.getDistanceFrom(player) != 0.0){
-            collision = false;
-            killed = false;
+        if(isColliding == true && closestEnemy.getDistanceFrom(objectA) != 0.0){
+            isColliding = false;
         }
-
     }
-
 
     /**
      * Restarts a previously set alarm unless the enemy limit has been exceeded
      */
     private void restartAlarm() {
-        if (enemiesList.size() <= maxEnemies) {
+        if (enemiesList.size() < maxEnemies) {
             startAlarm();
+        } else {
+            restartAlarmDelayed();
         }
+    }
+
+    /**
+     * Delays setting a new alarm so maxEnemies can be honored
+     * Spawning will continue if the max was reached but enemies were killed
+     */
+    private void restartAlarmDelayed() {
+        Alarm alarm = new Alarm("delayedSpawn", spawnDelay);
+        alarm.addTarget(this);
+        alarm.start();
     }
 
     /**
@@ -116,7 +105,25 @@ public class EnemyController implements IAlarmListener {
      */
     @Override
     public void triggerAlarm(String alarmName) {
-        enemiesList.add(new Enemy(world, Enemy.Color.Yellow));
+        if (world.getGameStarted() && alarmName.equals(enemySpawnAlarmName)) {
+            Enemy.Color enemyColor = Enemy.Color.Yellow;
+            int score = world.getScoreboard().getScore();
+
+            if (score > 10) {
+                enemyColor = Enemy.Color.Red;
+                maxEnemies = 10;
+            } else if (score > 5) {
+                enemyColor = Enemy.Color.Orange;
+                maxEnemies = 8;
+            }
+
+            enemiesList.add(new Enemy(world, enemyColor));
+        }
         restartAlarm();
+    }
+
+    public void removeEnemy(Enemy enemy) {
+        world.deleteGameObject(enemy);
+        enemiesList.remove(enemy);
     }
 }
