@@ -19,6 +19,10 @@ public class DropController extends AlarmController {
         super(world);
     }
 
+    public List<Drop> getDrops() {
+        return drops;
+    }
+
     @Override
     public void startAlarm() {
         Alarm maskAlarm = new Alarm(dropAlarmName, spawnDelay);
@@ -47,13 +51,33 @@ public class DropController extends AlarmController {
         if (alarmName.equals(despawnAlarmName)) {
             Iterator<Drop> iter = drops.iterator(); /* Regular for-loop gave a ConcurrentModificationException sometimes. This fixes that problem */
             while(iter.hasNext()) {
-                iter.next().despawn();
+                Drop drop = iter.next();
+                drop.despawn();
             }
             drops.clear();
-            System.out.println(drops.size());
             return;
         }
 
+        if (shouldSpawn()) {
+            spawn(new Mask(world));
+        }
+        if (shouldSpawn()) {
+            spawn(new Virus(world));
+        }
+
+        restartAlarm();
+    }
+
+    private boolean shouldSpawn() {
+        return Math.random() > Math.pow(spawnChance, returnSpawnChancePower());
+    }
+
+    private void spawn(Drop drop) {
+        drop.spawn();
+        drops.add(drop);
+    }
+
+    private float returnSpawnChancePower() {
         int score = world.getScoreboard().getScore();
         int chancePower = 1;
 
@@ -62,36 +86,15 @@ public class DropController extends AlarmController {
         } else if (score > 5) {
             chancePower = 2;
         }
-
-        boolean spawnMask = Math.random() > Math.pow(spawnChance, chancePower);
-        System.out.println("spawnMask " + spawnMask);
-        if (spawnMask) {
-            Drop mask = new Mask(world);
-            mask.spawn();
-            drops.add(mask);
-        }
-
-        boolean spawnVirus = Math.random() > Math.pow(spawnChance, chancePower);
-        System.out.println("spawnVirus " + spawnVirus);
-        if(spawnVirus) {
-            Drop virus = new Virus(world);
-            virus.spawn();
-            drops.add(virus);
-        }
-
-        restartAlarm();
+        return chancePower;
     }
 
-    /**
-     * Checks and handles collision between any person and a drop
-     * @param person an instance of the Person class, either the player or an enemy
-     */
-    public void dropCollisionOccurred(Person person, Drop drop) {
-        if (drop.getDistanceFrom(person) == 0.0) {
-            person.handleCollisionWith(drop);
-            if (person instanceof Player) {
-
-            }
+    public void despawn(Drop drop) {
+        if (drops.contains(drop)) {
+            drops.remove(drop);
+        }
+        if (world.getGameObjectItems().contains(drop)){
+            world.deleteGameObject(drop);
         }
     }
 }

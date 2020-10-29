@@ -4,10 +4,14 @@ import nl.han.ica.oopg.objects.GameObject;
 import nl.han.ica.oopg.objects.Sprite;
 import nl.han.ica.oopg.sound.Sound;
 import pedroroel.coronamayhem.CoronaMayhem;
+import pedroroel.coronamayhem.controllers.CollisionController;
+
+import java.util.List;
 
 public class Player extends Person {
     private final int size = 25;
     private final Sound hitSound = new Sound(world, world.baseAssetPath + "sounds/player_hit.mp3");
+    protected boolean isColliding = false;
 
     /**
      * New player has his sprite, currentFrameIndex and gravity set
@@ -19,6 +23,10 @@ public class Player extends Person {
         this.world = world;
         setCurrentFrameIndex(1);
         setFriction(0.025f);
+    }
+
+    public boolean getIsColliding() {
+        return isColliding;
     }
 
     /**
@@ -45,6 +53,13 @@ public class Player extends Person {
     }
 
     @Override
+    public void increaseLives() {
+        if (lives < 1) {
+            super.increaseLives();
+        }
+    }
+
+    @Override
     public void decreaseLives() {
         playHitSound();
         super.decreaseLives();
@@ -58,8 +73,49 @@ public class Player extends Person {
         hitSound.play();
     }
 
+    @Override
     public int returnCurrentFrameIndexOffset() {
         return lives > 0 ? 0 : 2;
+    }
+
+    /**
+     * Checks player collision with both enemies and drops
+     * @param collisionCtrl Easy reference to the CollisionController
+     */
+    public void checkCollisionOccurred(CollisionController collisionCtrl) {
+        /* Checks if no more collisions are happening. If not, resets "isColliding" */
+        boolean collisionHappened = false;
+
+        /* Check for collision with Enemies */
+        List<Enemy> enemies = world.getEnemyCtrl().getEnemies();
+        /* Only check if there are more than 0 enemies */
+        if (enemies.size() > 0) {
+            for (Enemy enemy: enemies) {
+                boolean collidedWithEnemy = collisionCtrl.hasCollisionOccurred(this, enemy);
+                if (collidedWithEnemy && !isColliding) {
+                    isColliding = collisionHappened = true;
+                    handleCollisionWith(enemy);
+                    break; /* Only one enemy can be collided with, so it makes sense to break here */
+                }
+            }
+        }
+
+        if (!collisionHappened && isColliding) {
+            isColliding = false;
+        }
+
+        /* Check for collision with Drops */
+        List<Drop> drops = world.getDropCtrl().getDrops();
+        /* Only check if there are more than 0 drops*/
+        if (drops.size() > 0) {
+            for (Drop drop: drops) {
+                boolean collidedWithDrop = collisionCtrl.hasCollisionOccurred(this, drop);
+                if (collidedWithDrop) {
+                    handleCollisionWith(drop);
+                    break; /* Only one drop can be collided with, so it makes sense to break here */
+                }
+            }
+        }
     }
 
     /**
@@ -70,7 +126,28 @@ public class Player extends Person {
     public void handleCollisionWith(GameObject object) {
         if (object instanceof Enemy) {
             /* Hit an enemy */
-
+            System.out.println("Player hit an enemy!");
+            if (this.getAngleFrom(object) >= 160 && this.getAngleFrom(object) <= 220) {
+                System.out.println("Healed!");
+//                ((Enemy)object).decreaseLives();
+//                world.getScoreboard().increase();
+            } else {
+                System.out.println("Infected!");
+//                decreaseLives();
+//                world.getScoreboard().decrease();
+            }
+        } else if (object instanceof Drop) {
+            /* Hit some kind of drop */
+//            System.out.println("Player hit a drop!");
+            if (object instanceof Mask) {
+//                increaseLives();
+//                System.out.println("Drop is a Mask!");
+            } else if (object instanceof Virus) {
+//                decreaseLives();
+//                System.out.println("Drop is a Virus!");
+            }
+            System.out.println("Despawned!");
+            world.getDropCtrl().despawn(((Drop)object));
         }
     }
 

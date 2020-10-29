@@ -12,8 +12,17 @@ public abstract class Drop extends SpriteObject {
         this.world = world;
     }
 
-    public abstract void spawn();
-    public abstract void despawn();
+    public void spawn() {
+        setCoords();
+        world.addGameObject(this);
+    }
+
+    public void despawn() {
+        if (world.getGameObjectItems().contains(this)) {
+            world.deleteGameObject(this);
+        }
+    }
+
     public abstract void setCoords();
 
     @Override

@@ -8,6 +8,7 @@ import nl.han.ica.oopg.objects.AnimatedSpriteObject;
 import nl.han.ica.oopg.objects.GameObject;
 import nl.han.ica.oopg.objects.Sprite;
 import pedroroel.coronamayhem.CoronaMayhem;
+import pedroroel.coronamayhem.controllers.CollisionController;
 import pedroroel.coronamayhem.objects.GameTile;
 import processing.core.PVector;
 
@@ -17,6 +18,7 @@ public abstract class Person extends AnimatedSpriteObject implements ICollidable
     protected CoronaMayhem world;
     protected float entitySpeed = 2f;
     protected int lives = 1;
+
 
     public Person(CoronaMayhem world, Sprite sprite, int totalFrames) {
         super(sprite, totalFrames);

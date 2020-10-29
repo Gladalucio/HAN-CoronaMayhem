@@ -9,17 +9,6 @@ public class Virus extends Drop {
     }
 
     @Override
-    public void spawn() {
-        setCoords();
-        world.addGameObject(this);
-    }
-
-    @Override
-    public void despawn() {
-        world.deleteGameObject(this);
-    }
-
-    @Override
     public void setCoords() {
         setX(world.width - 125);
         setY(250);

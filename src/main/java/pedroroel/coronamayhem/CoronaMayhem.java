@@ -5,6 +5,8 @@ import nl.han.ica.oopg.objects.Sprite;
 import nl.han.ica.oopg.tile.TileMap;
 import nl.han.ica.oopg.tile.TileType;
 import nl.han.ica.oopg.view.View;
+import pedroroel.coronamayhem.controllers.CollisionController;
+import pedroroel.coronamayhem.controllers.DropController;
 import pedroroel.coronamayhem.entities.Player;
 import pedroroel.coronamayhem.controllers.EnemyController;
 import pedroroel.coronamayhem.objects.GameTile;
@@ -19,6 +21,8 @@ public class CoronaMayhem extends GameEngine {
     public final String baseAssetPath = "src/main/java/pedroroel/coronamayhem/assets/";
     private Player player = new Player(this, 1);
     private EnemyController enemyCtrl = new EnemyController(this);
+    private DropController dropCtrl = new DropController(this);
+    private CollisionController collisionCtrl = new CollisionController(this);
     private Scoreboard scoreboard = new Scoreboard(this);
     private LockDown lockDownButton = new LockDown(this);
     private final Menu menu = new Menu(this);
@@ -43,6 +47,10 @@ public class CoronaMayhem extends GameEngine {
         return enemyCtrl;
     }
 
+    public DropController getDropCtrl() {
+        return dropCtrl;
+    }
+
     public boolean getGameStarted() {
         return gameStarted;
     }
@@ -60,6 +68,7 @@ public class CoronaMayhem extends GameEngine {
         initializeTileMap();
         addGameObject(player, 590, 500);
         enemyCtrl.startAlarm();
+        dropCtrl.startAlarm();
         scoreboard.show();
         pause();
         lockDownButton.showLargeButton();
@@ -70,7 +79,8 @@ public class CoronaMayhem extends GameEngine {
      * @param player the player.
      */
     public void update() {
-        enemyCtrl.entityCollisionOccurred(player, lockDownButton);
+//        enemyCtrl.entityCollisionOccurred(player, lockDownButton);
+        collisionCtrl.checkCollisions();
     }
 
     /**
@@ -109,7 +119,7 @@ public class CoronaMayhem extends GameEngine {
         System.out.println("Reset game!");
         deleteAllGameOBjects();
         enemyCtrl = new EnemyController(this);
-        getEnemyCtrl().getAllEnemies().clear();
+        getEnemyCtrl().getEnemies().clear();
         player = new Player(this, 1);
         scoreboard = new Scoreboard(this);
         scoreboard.reset();

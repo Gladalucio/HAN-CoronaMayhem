@@ -10,17 +10,6 @@ public class Mask extends Drop {
     }
 
     @Override
-    public void spawn() {
-        setCoords();
-        world.addGameObject(this);
-    }
-
-    @Override
-    public void despawn() {
-        world.deleteGameObject(this);
-    }
-
-    @Override
     public void setCoords() {
         setX(125);
         setY(250);

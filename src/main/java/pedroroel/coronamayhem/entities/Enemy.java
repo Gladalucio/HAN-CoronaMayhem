@@ -4,6 +4,7 @@ import nl.han.ica.oopg.objects.GameObject;
 import nl.han.ica.oopg.objects.Sprite;
 import nl.han.ica.oopg.sound.Sound;
 import pedroroel.coronamayhem.CoronaMayhem;
+import pedroroel.coronamayhem.controllers.CollisionController;
 
 public class Enemy extends Person {
     public enum Color {
@@ -44,6 +45,13 @@ public class Enemy extends Person {
     }
 
     @Override
+    public void increaseLives() {
+        if (lives < 2) {
+            super.increaseLives();
+        }
+    }
+
+    @Override
     public void decreaseLives() {
         super.decreaseLives();
         playHealedSound();
@@ -56,6 +64,7 @@ public class Enemy extends Person {
      * Returns the offset the currentFrameOffset needs to show the correct sprite
      * EnemyColor and currentFrameIndexOffset are based on the lives the enemy has left
      */
+    @Override
     public int returnCurrentFrameIndexOffset() {
         switch(lives) {
             case 2:
@@ -72,7 +81,11 @@ public class Enemy extends Person {
 
     @Override
     public void handleCollisionWith(GameObject object) {
-
+        if (object instanceof Mask) {
+            decreaseLives();
+        } else if (object instanceof Virus) {
+            increaseLives();
+        }
     }
 
     private void determineSpawnSide() {

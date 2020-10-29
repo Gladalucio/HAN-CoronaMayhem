@@ -4,16 +4,15 @@ import nl.han.ica.oopg.alarm.Alarm;
 import nl.han.ica.oopg.alarm.IAlarmListener;
 import nl.han.ica.oopg.objects.GameObject;
 import pedroroel.coronamayhem.CoronaMayhem;
-import pedroroel.coronamayhem.entities.Enemy;
-import pedroroel.coronamayhem.entities.Player;
-import pedroroel.coronamayhem.objects.LockDown;
+import pedroroel.coronamayhem.entities.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class EnemyController implements IAlarmListener {
     private final CoronaMayhem world;
-    private final List<Enemy> enemiesList = new ArrayList<>();
+    private final List<Enemy> enemies = new ArrayList<>();
     private final String enemySpawnAlarmName = "enemy";
     private float spawnDelay = 3;
     private int maxEnemies = 6;
@@ -24,8 +23,8 @@ public class EnemyController implements IAlarmListener {
         this.world = world;
     }
 
-    public List<Enemy> getAllEnemies() {
-        return enemiesList;
+    public List<Enemy> getEnemies() {
+        return enemies;
     }
 
     /**
@@ -34,57 +33,31 @@ public class EnemyController implements IAlarmListener {
     public void startAlarm() {
         int baseSpawnDelay = 3;
 
-        spawnDelay = enemiesList.size() < 4 ? 0.75f : baseSpawnDelay;
+        spawnDelay = enemies.size() < 4 ? 0.75f : baseSpawnDelay;
         Alarm alarm = new Alarm(enemySpawnAlarmName, spawnDelay);
         alarm.addTarget(this);
         alarm.start();
     }
 
     /**
-     * calculates and picks the current closest enemy to the player and handles possible collision
+     * Checks enemy collision with drops
+     * @param collisionCtrl Easy reference to the CollisionController
      */
-    public void entityCollisionOccurred(GameObject objectA, GameObject objectB)
-    {
-        System.out.println(objectA.getDistanceFrom(objectB));
-        if (enemiesList.size() < 1) {
+    public void checkCollisionOccurred(CollisionController collisionCtrl) {
+        List<Drop> drops = world.getDropCtrl().getDrops();
+
+        /* If no drops are present, enemy collision with drops doesn't need to be checked */
+        if (drops.size() < 1) {
             return;
         }
 
-        double closestEnemyDistance = 10000.0;
-
-        for(Enemy ce : enemiesList)
-        {
-            if(ce.getDistanceFrom(objectA) <= closestEnemyDistance)
-            {
-                closestEnemyDistance = ce.getDistanceFrom(objectA);
-                closestEnemy = ce;
+        for(Enemy enemy: enemies) {
+            for (Drop drop: drops) {
+                boolean collided = collisionCtrl.hasCollisionOccurred(enemy, drop);
+                if (collided) {
+                    enemy.handleCollisionWith(drop);
+                }
             }
-        }
-        if(objectA.getDistanceFrom(objectB) <= 0.0)
-        {
-            System.out.println("wtf");
-            for(Enemy ae : getAllEnemies())
-            {
-                ae.decreaseLives();
-            }
-        }
-        if(isColliding == false && closestEnemy.getDistanceFrom(objectA) == 0.0)
-        {
-            if(objectA.getAngleFrom(closestEnemy) >= 160 && objectA.getAngleFrom(closestEnemy) <= 220)
-            {
-                System.out.println("Healed a patient!");
-                isColliding = true;
-                closestEnemy.decreaseLives();
-                world.getScoreboard().increase();
-            }else {
-                System.out.println("Infected!");
-                isColliding = true;
-                ((Player)objectA).decreaseLives();
-                world.getScoreboard().decrease();
-            }
-        }
-        if(isColliding == true && closestEnemy.getDistanceFrom(objectA) != 0.0){
-            isColliding = false;
         }
     }
 
@@ -92,7 +65,7 @@ public class EnemyController implements IAlarmListener {
      * Restarts a previously set alarm unless the enemy limit has been exceeded
      */
     private void restartAlarm() {
-        if (enemiesList.size() < maxEnemies) {
+        if (enemies.size() < maxEnemies) {
             startAlarm();
         } else {
             restartAlarmDelayed();
@@ -127,13 +100,60 @@ public class EnemyController implements IAlarmListener {
                 maxEnemies = 8;
             }
 
-            enemiesList.add(new Enemy(world, enemyColor));
+            enemies.add(new Enemy(world, enemyColor));
         }
         restartAlarm();
     }
 
     public void removeEnemy(Enemy enemy) {
         world.deleteGameObject(enemy);
-        enemiesList.remove(enemy);
+        enemies.remove(enemy);
     }
+
+//    /**
+//     * calculates and picks the current closest enemy to the player and handles possible collision
+//     */
+//    public void entityCollisionOccurred(GameObject objectA, GameObject objectB)
+//    {
+//        if (enemies.size() < 1) {
+//            return;
+//        }
+//
+//        double closestEnemyDistance = 10000.0;
+//
+//        for(Enemy ce : enemies)
+//        {
+//            if(ce.getDistanceFrom(objectA) <= closestEnemyDistance)
+//            {
+//                closestEnemyDistance = ce.getDistanceFrom(objectA);
+//                closestEnemy = ce;
+//            }
+//        }
+//        if(objectA.getDistanceFrom(objectB) <= 0.0)
+//        {
+//            System.out.println("wtf");
+//            for(Enemy ae : getEnemies())
+//            {
+//                ae.decreaseLives();
+//            }
+//        }
+//        if(isColliding == false && closestEnemy.getDistanceFrom(objectA) == 0.0)
+//        {
+//            if(objectA.getAngleFrom(closestEnemy) >= 160 && objectA.getAngleFrom(closestEnemy) <= 220)
+//            {
+//                System.out.println("Healed a patient!");
+//                isColliding = true;
+//                closestEnemy.decreaseLives();
+//                world.getScoreboard().increase();
+//            }else {
+//                System.out.println("Infected!");
+//                isColliding = true;
+//                ((Player)objectA).decreaseLives();
+//                world.getScoreboard().decrease();
+//            }
+//        }
+//        if(isColliding == true && closestEnemy.getDistanceFrom(objectA) != 0.0){
+//            isColliding = false;
+//        }
+//    }
 }
