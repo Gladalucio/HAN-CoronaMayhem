@@ -1,5 +1,6 @@
 package pedroroel.coronamayhem.entities;
 
+import nl.han.ica.oopg.objects.GameObject;
 import nl.han.ica.oopg.objects.Sprite;
 import nl.han.ica.oopg.sound.Sound;
 import pedroroel.coronamayhem.CoronaMayhem;
@@ -59,6 +60,18 @@ public class Player extends Person {
 
     public int returnCurrentFrameIndexOffset() {
         return lives > 0 ? 0 : 2;
+    }
+
+    /**
+     * Handles collision with a certain game object based on what it is
+     * @param object the collided game object
+     */
+    @Override
+    public void handleCollisionWith(GameObject object) {
+        if (object instanceof Enemy) {
+            /* Hit an enemy */
+
+        }
     }
 
     /**

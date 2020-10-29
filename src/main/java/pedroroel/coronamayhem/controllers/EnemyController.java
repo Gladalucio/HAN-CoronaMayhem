@@ -4,12 +4,12 @@ import nl.han.ica.oopg.alarm.Alarm;
 import nl.han.ica.oopg.objects.GameObject;
 import pedroroel.coronamayhem.CoronaMayhem;
 import pedroroel.coronamayhem.entities.Enemy;
-import pedroroel.coronamayhem.entities.Player;
+import pedroroel.coronamayhem.entities.Person;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnemyController extends Controller{
+public class EnemyController extends AlarmController {
     private final List<Enemy> enemiesList = new ArrayList<>();
     private final String enemySpawnAlarmName = "enemy";
     private float spawnDelay = 3;
@@ -21,7 +21,7 @@ public class EnemyController extends Controller{
         super(world);
     }
 
-    public List<Enemy> getAllEnemies() {
+    public List<Enemy> getEnemiesList() {
         return enemiesList;
     }
 
@@ -40,7 +40,7 @@ public class EnemyController extends Controller{
     /**
      * calculates and picks the current closest enemy to the player and handles possible collision
      */
-    public void entityCollisionOccurred(GameObject objectA, GameObject objectB)
+    public void enemyCollisionOccurred(Person person)
     {
         if (enemiesList.size() < 1) {
             return;
@@ -50,15 +50,15 @@ public class EnemyController extends Controller{
 
         for(Enemy ce : enemiesList)
         {
-            if(ce.getDistanceFrom(objectA) <= closestEnemyDistance)
+            if(ce.getDistanceFrom(person) <= closestEnemyDistance)
             {
-                closestEnemyDistance = ce.getDistanceFrom(objectA);
+                closestEnemyDistance = ce.getDistanceFrom(person);
                 closestEnemy = ce;
             }
         }
-        if(isColliding == false && closestEnemy.getDistanceFrom(objectA) == 0.0)
+        if(!isColliding && closestEnemy.getDistanceFrom(person) == 0.0)
         {
-            if(objectA.getAngleFrom(closestEnemy) >= 160 && objectA.getAngleFrom(closestEnemy) <= 220)
+            if(person.getAngleFrom(closestEnemy) >= 160 && person.getAngleFrom(closestEnemy) <= 220)
             {
                 System.out.println("Healed a patient!");
                 isColliding = true;
@@ -67,11 +67,11 @@ public class EnemyController extends Controller{
             }else {
                 System.out.println("Infected!");
                 isColliding = true;
-                ((Player)objectA).decreaseLives();
+                person.decreaseLives();
                 world.getScoreboard().decrease();
             }
         }
-        if(isColliding == true && closestEnemy.getDistanceFrom(objectA) != 0.0){
+        if(isColliding && closestEnemy.getDistanceFrom(person) != 0.0){
             isColliding = false;
         }
     }

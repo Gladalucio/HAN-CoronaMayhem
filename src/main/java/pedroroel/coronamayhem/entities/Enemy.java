@@ -1,5 +1,6 @@
 package pedroroel.coronamayhem.entities;
 
+import nl.han.ica.oopg.objects.GameObject;
 import nl.han.ica.oopg.objects.Sprite;
 import nl.han.ica.oopg.sound.Sound;
 import pedroroel.coronamayhem.CoronaMayhem;
@@ -67,6 +68,11 @@ public class Enemy extends Person {
                 enemyColor = Color.Yellow;
                 return 0;
         }
+    }
+
+    @Override
+    public void handleCollisionWith(GameObject object) {
+
     }
 
     private void determineSpawnSide() {

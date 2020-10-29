@@ -5,6 +5,7 @@ import nl.han.ica.oopg.collision.CollisionSide;
 import nl.han.ica.oopg.collision.ICollidableWithTiles;
 import nl.han.ica.oopg.exceptions.TileNotFoundException;
 import nl.han.ica.oopg.objects.AnimatedSpriteObject;
+import nl.han.ica.oopg.objects.GameObject;
 import nl.han.ica.oopg.objects.Sprite;
 import pedroroel.coronamayhem.CoronaMayhem;
 import pedroroel.coronamayhem.objects.GameTile;
@@ -72,4 +73,6 @@ public abstract class Person extends AnimatedSpriteObject implements ICollidable
             }
         }
     }
+
+    public abstract void handleCollisionWith(GameObject object);
 }
