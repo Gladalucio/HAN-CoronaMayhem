@@ -12,6 +12,7 @@ public class DropController extends AlarmController {
     private final List<Drop> drops = new ArrayList<>();
     private final float spawnDelay = 5;
     private final float spawnChance = 0.75f;
+//    private final float spawnChance = 0.01f;
     private final String dropAlarmName = "drop";
     private final String despawnAlarmName = "despawn";
 

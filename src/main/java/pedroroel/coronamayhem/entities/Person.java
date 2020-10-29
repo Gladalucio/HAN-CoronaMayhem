@@ -39,11 +39,13 @@ public abstract class Person extends AnimatedSpriteObject implements ICollidable
     public void increaseLives() {
         lives += 1;
         setCurrentFrameIndex(getCurrentFrameIndex());
+        world.getScoreboard().update();
     }
 
     public void decreaseLives() {
         lives -= 1;
         setCurrentFrameIndex(getCurrentFrameIndex());
+        world.getScoreboard().update();
     }
 
     public abstract int returnCurrentFrameIndexOffset();

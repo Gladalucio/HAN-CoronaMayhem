@@ -24,9 +24,14 @@ public class CollisionController {
      * @param object the GameObject collision has to be checked with (person, drop or other game objects)
      */
     public boolean hasCollisionOccurred(Person person, GameObject object) {
-        if (object.getDistanceFrom(person) >= 0 && object.getDistanceFrom(person) < 2) {
+        float distance = returnDistance(person, object);
+        if (distance >= 0 && distance < 2) {
             return true;
         }
         return false;
+    }
+
+    public float returnDistance(Person person, GameObject object) {
+        return (float) object.getDistanceFrom(person);
     }
 }
