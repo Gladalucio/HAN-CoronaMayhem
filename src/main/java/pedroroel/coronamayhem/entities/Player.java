@@ -9,7 +9,6 @@ import pedroroel.coronamayhem.controllers.CollisionController;
 import java.util.List;
 
 public class Player extends Person {
-    private final int size = 25;
     private final Sound hitSound = new Sound(world, world.baseAssetPath + "sounds/player_hit.mp3");
     protected boolean isColliding = false;
 
@@ -25,15 +24,13 @@ public class Player extends Person {
         setFriction(0.025f);
     }
 
-    public boolean getIsColliding() {
-        return isColliding;
-    }
-
     /**
      * Controls player movement after a direction has been chosen in "keyPressed()"
      */
     @Override
     public void update() {
+        final int size = 25;
+
         if (getX() <= 0) {
             setxSpeed(0);
             setX(0);

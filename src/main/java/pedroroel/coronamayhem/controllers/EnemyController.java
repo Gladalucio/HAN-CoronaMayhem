@@ -1,26 +1,20 @@
 package pedroroel.coronamayhem.controllers;
 
 import nl.han.ica.oopg.alarm.Alarm;
-import nl.han.ica.oopg.alarm.IAlarmListener;
-import nl.han.ica.oopg.objects.GameObject;
 import pedroroel.coronamayhem.CoronaMayhem;
 import pedroroel.coronamayhem.entities.*;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-public class EnemyController implements IAlarmListener {
-    private final CoronaMayhem world;
+public class EnemyController extends AlarmController {
     private final List<Enemy> enemies = new ArrayList<>();
     private final String enemySpawnAlarmName = "enemy";
     private float spawnDelay = 3;
     private int maxEnemies = 6;
-    private boolean isColliding = false;
-    private Enemy closestEnemy;
 
     public EnemyController(CoronaMayhem world) {
-        this.world = world;
+        super(world);
     }
 
     public List<Enemy> getEnemies() {
@@ -64,7 +58,7 @@ public class EnemyController implements IAlarmListener {
     /**
      * Restarts a previously set alarm unless the enemy limit has been exceeded
      */
-    private void restartAlarm() {
+    protected void restartAlarm() {
         if (enemies.size() < maxEnemies) {
             startAlarm();
         } else {
@@ -109,51 +103,4 @@ public class EnemyController implements IAlarmListener {
         world.deleteGameObject(enemy);
         enemies.remove(enemy);
     }
-
-//    /**
-//     * calculates and picks the current closest enemy to the player and handles possible collision
-//     */
-//    public void entityCollisionOccurred(GameObject objectA, GameObject objectB)
-//    {
-//        if (enemies.size() < 1) {
-//            return;
-//        }
-//
-//        double closestEnemyDistance = 10000.0;
-//
-//        for(Enemy ce : enemies)
-//        {
-//            if(ce.getDistanceFrom(objectA) <= closestEnemyDistance)
-//            {
-//                closestEnemyDistance = ce.getDistanceFrom(objectA);
-//                closestEnemy = ce;
-//            }
-//        }
-//        if(objectA.getDistanceFrom(objectB) <= 0.0)
-//        {
-//            System.out.println("wtf");
-//            for(Enemy ae : getEnemies())
-//            {
-//                ae.decreaseLives();
-//            }
-//        }
-//        if(isColliding == false && closestEnemy.getDistanceFrom(objectA) == 0.0)
-//        {
-//            if(objectA.getAngleFrom(closestEnemy) >= 160 && objectA.getAngleFrom(closestEnemy) <= 220)
-//            {
-//                System.out.println("Healed a patient!");
-//                isColliding = true;
-//                closestEnemy.decreaseLives();
-//                world.getScoreboard().increase();
-//            }else {
-//                System.out.println("Infected!");
-//                isColliding = true;
-//                ((Player)objectA).decreaseLives();
-//                world.getScoreboard().decrease();
-//            }
-//        }
-//        if(isColliding == true && closestEnemy.getDistanceFrom(objectA) != 0.0){
-//            isColliding = false;
-//        }
-//    }
 }

@@ -4,8 +4,6 @@ import nl.han.ica.oopg.objects.GameObject;
 import pedroroel.coronamayhem.CoronaMayhem;
 import pedroroel.coronamayhem.entities.*;
 
-import java.util.List;
-
 public class CollisionController {
     private final CoronaMayhem world;
 
@@ -25,10 +23,7 @@ public class CollisionController {
      */
     public boolean hasCollisionOccurred(Person person, GameObject object) {
         float distance = returnDistance(person, object);
-        if (distance >= 0 && distance < 2) {
-            return true;
-        }
-        return false;
+        return distance >= 0 && distance < 2;
     }
 
     public float returnDistance(Person person, GameObject object) {

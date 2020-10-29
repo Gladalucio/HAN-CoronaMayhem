@@ -4,7 +4,6 @@ import nl.han.ica.oopg.objects.GameObject;
 import nl.han.ica.oopg.objects.Sprite;
 import nl.han.ica.oopg.sound.Sound;
 import pedroroel.coronamayhem.CoronaMayhem;
-import pedroroel.coronamayhem.controllers.CollisionController;
 
 public class Enemy extends Person {
     public enum Color {

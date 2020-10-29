@@ -5,15 +5,10 @@ import pedroroel.coronamayhem.CoronaMayhem;
 import pedroroel.coronamayhem.entities.*;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class DropController extends AlarmController {
     private final List<Drop> drops = new ArrayList<>();
-    private final float spawnDelay = 5;
-    private final float spawnChance = 0.75f;
-//    private final float spawnChance = 0.01f;
-    private final String dropAlarmName = "drop";
     private final String despawnAlarmName = "despawn";
 
     public DropController(CoronaMayhem world) {
@@ -26,6 +21,9 @@ public class DropController extends AlarmController {
 
     @Override
     public void startAlarm() {
+        final float spawnDelay = 2;
+        final String dropAlarmName = "drop";
+
         Alarm maskAlarm = new Alarm(dropAlarmName, spawnDelay);
         maskAlarm.addTarget(this);
         maskAlarm.start();
@@ -50,9 +48,7 @@ public class DropController extends AlarmController {
         }
 
         if (alarmName.equals(despawnAlarmName)) {
-            Iterator<Drop> iter = drops.iterator(); /* Regular for-loop gave a ConcurrentModificationException sometimes. This fixes that problem */
-            while(iter.hasNext()) {
-                Drop drop = iter.next();
+            for (Drop drop: drops) {
                 drop.despawn();
             }
             drops.clear();
@@ -70,6 +66,9 @@ public class DropController extends AlarmController {
     }
 
     private boolean shouldSpawn() {
+//        final float spawnChance = 0.75f;
+        final float spawnChance = 0.01f;
+
         return Math.random() > Math.pow(spawnChance, returnSpawnChancePower());
     }
 

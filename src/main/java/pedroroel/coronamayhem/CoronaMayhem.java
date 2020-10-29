@@ -74,12 +74,7 @@ public class CoronaMayhem extends GameEngine {
         lockDownButton.showLargeButton();
     }
 
-    @Override
-    /**
-     * @param player the player.
-     */
     public void update() {
-//        enemyCtrl.entityCollisionOccurred(player, lockDownButton);
         collisionCtrl.checkCollisions();
     }
 

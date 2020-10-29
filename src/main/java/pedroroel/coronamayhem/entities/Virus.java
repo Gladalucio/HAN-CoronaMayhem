@@ -8,9 +8,9 @@ public class Virus extends Drop {
         super(world, new Sprite(world.baseAssetPath + "images/virus.png"));
     }
 
-    @Override
-    public void setCoords() {
-        setX(world.width - 125);
-        setY(250);
-    }
+//    @Override
+//    public void setCoords() {
+//        setX(world.width - 125);
+//        setY(yLocations[returnRandomInt(yLocations.length)]);
+//    }
 }
