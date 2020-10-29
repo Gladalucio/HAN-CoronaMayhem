@@ -1,15 +1,18 @@
 package pedroroel.coronamayhem.controllers;
 
 import nl.han.ica.oopg.alarm.Alarm;
+import nl.han.ica.oopg.alarm.IAlarmListener;
 import nl.han.ica.oopg.objects.GameObject;
 import pedroroel.coronamayhem.CoronaMayhem;
 import pedroroel.coronamayhem.entities.Enemy;
-import pedroroel.coronamayhem.entities.Person;
+import pedroroel.coronamayhem.entities.Player;
+import pedroroel.coronamayhem.objects.LockDown;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnemyController extends AlarmController {
+public class EnemyController implements IAlarmListener {
+    private final CoronaMayhem world;
     private final List<Enemy> enemiesList = new ArrayList<>();
     private final String enemySpawnAlarmName = "enemy";
     private float spawnDelay = 3;
@@ -18,10 +21,10 @@ public class EnemyController extends AlarmController {
     private Enemy closestEnemy;
 
     public EnemyController(CoronaMayhem world) {
-        super(world);
+        this.world = world;
     }
 
-    public List<Enemy> getEnemiesList() {
+    public List<Enemy> getAllEnemies() {
         return enemiesList;
     }
 
@@ -40,8 +43,9 @@ public class EnemyController extends AlarmController {
     /**
      * calculates and picks the current closest enemy to the player and handles possible collision
      */
-    public void enemyCollisionOccurred(Person person)
+    public void entityCollisionOccurred(GameObject objectA, GameObject objectB)
     {
+        System.out.println(objectA.getDistanceFrom(objectB));
         if (enemiesList.size() < 1) {
             return;
         }
@@ -50,15 +54,23 @@ public class EnemyController extends AlarmController {
 
         for(Enemy ce : enemiesList)
         {
-            if(ce.getDistanceFrom(person) <= closestEnemyDistance)
+            if(ce.getDistanceFrom(objectA) <= closestEnemyDistance)
             {
-                closestEnemyDistance = ce.getDistanceFrom(person);
+                closestEnemyDistance = ce.getDistanceFrom(objectA);
                 closestEnemy = ce;
             }
         }
-        if(!isColliding && closestEnemy.getDistanceFrom(person) == 0.0)
+        if(objectA.getDistanceFrom(objectB) <= 0.0)
         {
-            if(person.getAngleFrom(closestEnemy) >= 160 && person.getAngleFrom(closestEnemy) <= 220)
+            System.out.println("wtf");
+            for(Enemy ae : getAllEnemies())
+            {
+                ae.decreaseLives();
+            }
+        }
+        if(isColliding == false && closestEnemy.getDistanceFrom(objectA) == 0.0)
+        {
+            if(objectA.getAngleFrom(closestEnemy) >= 160 && objectA.getAngleFrom(closestEnemy) <= 220)
             {
                 System.out.println("Healed a patient!");
                 isColliding = true;
@@ -67,11 +79,11 @@ public class EnemyController extends AlarmController {
             }else {
                 System.out.println("Infected!");
                 isColliding = true;
-                person.decreaseLives();
+                ((Player)objectA).decreaseLives();
                 world.getScoreboard().decrease();
             }
         }
-        if(isColliding && closestEnemy.getDistanceFrom(person) != 0.0){
+        if(isColliding == true && closestEnemy.getDistanceFrom(objectA) != 0.0){
             isColliding = false;
         }
     }
@@ -79,7 +91,7 @@ public class EnemyController extends AlarmController {
     /**
      * Restarts a previously set alarm unless the enemy limit has been exceeded
      */
-    protected void restartAlarm() {
+    private void restartAlarm() {
         if (enemiesList.size() < maxEnemies) {
             startAlarm();
         } else {
