@@ -7,10 +7,4 @@ public class Mask extends Drop {
     public Mask(CoronaMayhem world) {
         super(world, new Sprite(world.baseAssetPath + "images/mask.png"));
     }
-
-//    @Override
-//    public void setCoords() {
-//        setX(125);
-//        setY(250);
-//    }
 }

@@ -6,6 +6,11 @@ import nl.han.ica.oopg.sound.Sound;
 import pedroroel.coronamayhem.CoronaMayhem;
 
 public class Enemy extends Person {
+    private Color enemyColor;
+    private SpawnSide spawnSide;
+    private final Sound doorSound = new Sound(world, world.baseAssetPath + "sounds/enemy_door.mp3");
+    private final Sound healedSound = new Sound(world, world.baseAssetPath + "sounds/enemy_healed.mp3");
+
     public enum Color {
         Yellow,
         Orange,
@@ -15,11 +20,6 @@ public class Enemy extends Person {
         Right,
         Left
     }
-
-    private Color enemyColor;
-    private SpawnSide spawnSide;
-    private final Sound doorSound = new Sound(world, world.baseAssetPath + "sounds/enemy_door.mp3");
-    private final Sound healedSound = new Sound(world, world.baseAssetPath + "sounds/enemy_healed.mp3");
 
     public Enemy(CoronaMayhem world, Color enemyColor) {
         super(world, new Sprite(world.baseAssetPath + "images/enemies.png"), 6);
@@ -54,9 +54,8 @@ public class Enemy extends Person {
     public void decreaseLives() {
         super.decreaseLives();
         playHealedSound();
-        if (lives < 0) {
-            world.getEnemyCtrl().removeEnemy(this);
-        }
+        /* Removing the enemy after being killed was moved to "checkCollision" in the EnemyController
+        * This because of the fact I couldn't solve the ConcurrentModificationException any other way */
     }
 
     /**
@@ -81,8 +80,10 @@ public class Enemy extends Person {
     @Override
     public void handleCollisionWith(GameObject object) {
         if (object instanceof Mask) {
+            System.out.println("Enemy " + this.enemyColor + " hit a mask!");
             decreaseLives();
         } else if (object instanceof Virus) {
+            System.out.println("Enemy " + this.enemyColor + " hit a virus!");
             increaseLives();
         }
     }

@@ -5,14 +5,16 @@ import pedroroel.coronamayhem.CoronaMayhem;
 import pedroroel.coronamayhem.entities.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class DropController extends AlarmController {
     private final List<Drop> drops = new ArrayList<>();
-    private final String despawnAlarmName = "despawn";
 
     public DropController(CoronaMayhem world) {
         super(world);
+        spawnDelay = 10;
+        maxSpawned = 3;
     }
 
     public List<Drop> getDrops() {
@@ -21,53 +23,49 @@ public class DropController extends AlarmController {
 
     @Override
     public void startAlarm() {
-        final float spawnDelay = 2;
-        final String dropAlarmName = "drop";
-
-        Alarm maskAlarm = new Alarm(dropAlarmName, spawnDelay);
+        Alarm maskAlarm = new Alarm(spawnAlarmName, spawnDelay);
         maskAlarm.addTarget(this);
         maskAlarm.start();
-
-        if (drops.size() > 0) {
-            Alarm despawnAlarm = new Alarm(despawnAlarmName, spawnDelay);
-            despawnAlarm.addTarget(this);
-            despawnAlarm.start();
-        }
-    }
-
-    @Override
-    protected void restartAlarm() {
-        startAlarm();
     }
 
     @Override
     public void triggerAlarm(String alarmName) {
         if (!world.getGameStarted()) {
-            restartAlarm();
+            delayAlarm();
             return;
         }
 
-        if (alarmName.equals(despawnAlarmName)) {
-            for (Drop drop: drops) {
+        /* Despawn drops */
+        if (drops.size() > 0) {
+            Iterator<Drop> dropIter = drops.iterator();
+            while (dropIter.hasNext()) {
+                Drop drop = dropIter.next();
+                dropIter.remove();
                 drop.despawn();
             }
-            drops.clear();
-            return;
         }
 
-        if (shouldSpawn()) {
-            spawn(new Mask(world));
-        }
-        if (shouldSpawn()) {
-            spawn(new Virus(world));
+        if (alarmName.equals(spawnAlarmName)) {
+            if (drops.size() >= maxSpawned) {
+                delayAlarm();
+                return;
+            }
+
+            if (returnShouldSpawn()) {
+                spawn(new Mask(world));
+            }
+
+            if (returnShouldSpawn()) {
+                spawn(new Virus(world));
+            }
         }
 
-        restartAlarm();
+        startAlarm();
     }
 
-    private boolean shouldSpawn() {
-//        final float spawnChance = 0.75f;
-        final float spawnChance = 0.01f;
+    private boolean returnShouldSpawn() {
+        final float spawnChance = 0.75f;
+//        final float spawnChance = 0.01f; // For development only
 
         return Math.random() > Math.pow(spawnChance, returnSpawnChancePower());
     }

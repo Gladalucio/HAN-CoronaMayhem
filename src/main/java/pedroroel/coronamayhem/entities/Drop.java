@@ -16,6 +16,7 @@ public abstract class Drop extends SpriteObject {
 
     public void spawn() {
         setPredeterminedCoords();
+        System.out.println("Drop coords: " + getX() + ", " + getY());
         world.addGameObject(this);
     }
 
@@ -37,19 +38,19 @@ public abstract class Drop extends SpriteObject {
 
         setY(yLocations[returnRandomInt(yLocations.length)]);
         if (getY() > yBlock * 14 || getY() < yBlock * 2) {
-            setX(returnRandomInt(1 + world.width));
+            int topX = returnRandomInt(world.getWidth() - xBlock * 2, xBlock);
+            setX(topX);
         } else {
             boolean spawnLeft = returnRandomInt(2) < 1;
             if (spawnLeft) {
-                setX(returnRandomInt(xBlock * 8, xBlock));
+                int topXLeft = returnRandomInt(xBlock * 8, xBlock);
+                setX(topXLeft);
             } else {
-                setX(returnRandomInt(xBlock * 16, xBlock * 23));
+                int topXRight = returnRandomInt(xBlock * 8, xBlock * 14);
+                setX(topXRight);
             }
-
         }
     }
-
-//    public abstract void setCoords();
 
     protected int returnRandomInt(int bound) {
         Random r = new Random();

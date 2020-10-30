@@ -10,7 +10,6 @@ import java.util.List;
 
 public class Player extends Person {
     private final Sound hitSound = new Sound(world, world.baseAssetPath + "sounds/player_hit.mp3");
-    protected boolean isColliding = false;
 
     /**
      * New player has his sprite, currentFrameIndex and gravity set

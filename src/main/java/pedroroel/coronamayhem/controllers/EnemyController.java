@@ -5,16 +5,16 @@ import pedroroel.coronamayhem.CoronaMayhem;
 import pedroroel.coronamayhem.entities.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class EnemyController extends AlarmController {
     private final List<Enemy> enemies = new ArrayList<>();
-    private final String enemySpawnAlarmName = "enemy";
-    private float spawnDelay = 3;
-    private int maxEnemies = 6;
 
     public EnemyController(CoronaMayhem world) {
         super(world);
+        spawnDelay = 3;
+        maxSpawned = 6;
     }
 
     public List<Enemy> getEnemies() {
@@ -26,9 +26,9 @@ public class EnemyController extends AlarmController {
      */
     public void startAlarm() {
         int baseSpawnDelay = 3;
-
         spawnDelay = enemies.size() < 4 ? 0.75f : baseSpawnDelay;
-        Alarm alarm = new Alarm(enemySpawnAlarmName, spawnDelay);
+
+        Alarm alarm = new Alarm(spawnAlarmName, spawnDelay);
         alarm.addTarget(this);
         alarm.start();
     }
@@ -39,30 +39,42 @@ public class EnemyController extends AlarmController {
      */
     public void checkCollisionOccurred(CollisionController collisionCtrl) {
         List<Drop> drops = world.getDropCtrl().getDrops();
+        removeDeadEnemies();
 
         /* If no drops are present, enemy collision with drops doesn't need to be checked */
         if (drops.size() < 1) {
             return;
         }
 
-        for(Enemy enemy: enemies) {
-            for (Drop drop: drops) {
+        /* Because enemies will be reduced in health thus removed from the list, the regular for-loop gives a ConcurrentModificationException */
+        for (Enemy enemy : enemies) {
+            final float maxDist = 10000;
+            final float minDist = 5;
+            float closestDist = maxDist;
+            boolean collisionHappened = false;
+            boolean enemyIsColliding = enemy.getIsColliding();
+
+            for (Drop drop : drops) {
+                float dist = collisionCtrl.returnDistance(enemy, drop);
+                if (dist < closestDist) {
+                    closestDist = dist;
+                }
+
                 boolean collided = collisionCtrl.hasCollisionOccurred(enemy, drop);
-                if (collided) {
+
+                if (collided && !enemyIsColliding) {
                     enemy.handleCollisionWith(drop);
+                    System.out.println("Collision!");
+                    collisionHappened = true;
+                    enemy.setIsColliding(true);
+
                 }
             }
-        }
-    }
 
-    /**
-     * Restarts a previously set alarm unless the enemy limit has been exceeded
-     */
-    protected void restartAlarm() {
-        if (enemies.size() < maxEnemies) {
-            startAlarm();
-        } else {
-            restartAlarmDelayed();
+            if (!collisionHappened && enemyIsColliding && closestDist > minDist && closestDist != maxDist) {
+                System.out.println("Collision reset!");
+                enemy.setIsColliding(false);
+            }
         }
     }
 
@@ -70,8 +82,8 @@ public class EnemyController extends AlarmController {
      * Delays setting a new alarm so maxEnemies can be honored
      * Spawning will continue if the max was reached but enemies were killed
      */
-    private void restartAlarmDelayed() {
-        Alarm alarm = new Alarm("delayedSpawn", spawnDelay);
+    protected void delayAlarm() {
+        Alarm alarm = new Alarm(delayAlarmName, spawnDelay);
         alarm.addTarget(this);
         alarm.start();
     }
@@ -82,25 +94,52 @@ public class EnemyController extends AlarmController {
      */
     @Override
     public void triggerAlarm(String alarmName) {
-        if (world.getGameStarted() && alarmName.equals(enemySpawnAlarmName)) {
+        if (!world.getGameStarted()) {
+            delayAlarm();
+            return;
+        }
+
+        if (alarmName.equals(spawnAlarmName)) {
+            if (enemies.size() >= maxSpawned) {
+                delayAlarm();
+                return;
+            }
+
             Enemy.Color enemyColor = Enemy.Color.Yellow;
             int score = world.getScoreboard().getScore();
 
             if (score > 10) {
                 enemyColor = Enemy.Color.Red;
-                maxEnemies = 10;
+                maxSpawned = 10;
             } else if (score > 5) {
                 enemyColor = Enemy.Color.Orange;
-                maxEnemies = 8;
+                maxSpawned = 8;
             }
 
             enemies.add(new Enemy(world, enemyColor));
         }
-        restartAlarm();
+
+        startAlarm();
     }
 
     public void removeEnemy(Enemy enemy) {
-        world.deleteGameObject(enemy);
-        enemies.remove(enemy);
+        if (enemies.contains(enemy)) {
+            enemies.remove(enemy);
+        }
+        if (world.getGameObjectItems().contains(enemy)) {
+            world.deleteGameObject(enemy);
+        }
+    }
+
+    private void removeDeadEnemies() {
+        Iterator<Enemy> deadIter = enemies.iterator();
+        while (deadIter.hasNext()) {
+            Enemy enemy = deadIter.next();
+            if (enemy.getLives() < 0) {
+                System.out.println("Removed dead enemy!");
+                deadIter.remove();
+                removeEnemy(enemy);
+            }
+        }
     }
 }
