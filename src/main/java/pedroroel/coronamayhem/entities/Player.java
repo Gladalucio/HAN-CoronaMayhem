@@ -8,6 +8,10 @@ import pedroroel.coronamayhem.controllers.CollisionController;
 
 import java.util.List;
 
+/**
+ * Player behavior is defined here
+ * extends Person
+ */
 public class Player extends Person {
     private final Sound hitSound = new Sound(world, world.baseAssetPath + "sounds/player_hit.mp3");
 
@@ -59,11 +63,15 @@ public class Player extends Person {
     public void decreaseLives() {
         playHitSound();
         super.decreaseLives();
+        world.getScoreboard().decrease();
         if (lives < 0) {
             world.pause();
         }
     }
 
+    /**
+     * Plays "hit" sound effect
+     */
     private void playHitSound() {
         hitSound.rewind();
         hitSound.play();
@@ -79,7 +87,7 @@ public class Player extends Person {
      * @param collisionCtrl Easy reference to the CollisionController
      */
     public void checkCollisionOccurred(CollisionController collisionCtrl) {
-        /* Checks if no more collisions are happening. If not, resets "isColliding" */
+        /* maxDist, minDist, closestDist and collisionHappened are used to check for valid collision and prevent bouncing */
         final float maxDist = 10000;
         final float minDist = 20;
         float closestDist = maxDist;
@@ -99,11 +107,12 @@ public class Player extends Person {
                 if (collidedWithEnemy && !isColliding) {
                     isColliding = collisionHappened = true;
                     handleCollisionWith(enemy);
-                    break; /* Only one enemy can be collided with, so it makes sense to break here */
+                    break; /* Only one enemy can be collided with at a time, so there is no need to continue the loop */
                 }
             }
         }
 
+        /* Resets the enemy's "isColliding" to false when the collision with any drops is over */
         if (!collisionHappened && isColliding && closestDist > minDist && closestDist != maxDist) {
             isColliding = false;
         }
@@ -116,25 +125,23 @@ public class Player extends Person {
                 boolean collidedWithDrop = collisionCtrl.hasCollisionOccurred(this, drop);
                 if (collidedWithDrop) {
                     handleCollisionWith(drop);
-                    break; /* Only one drop can be collided with, so it makes sense to break here */
+                    break; /* Only one drop can be collided with at a time, so it makes sense to break here */
                 }
             }
         }
     }
 
-    /**
-     * Handles collision with a certain game object based on what it is
-     * @param object the collided game object
-     */
     @Override
     public void handleCollisionWith(GameObject object) {
         if (object instanceof Enemy) {
-            /* Hit an enemy */
+            /* Hit an enemy, check if the hit was on it's head */
             if (this.getAngleFrom(object) >= 160 && this.getAngleFrom(object) <= 220) {
+                /* Hit the enemy on the head */
 //                System.out.println("Healed!");
                 ((Enemy)object).decreaseLives();
 //                world.getScoreboard().increase();
             } else {
+                /* Didn't hit the enemy on the head so you get infected */
 //                System.out.println("Infected!");
                 decreaseLives();
 //                world.getScoreboard().decrease();
@@ -143,26 +150,32 @@ public class Player extends Person {
             /* Hit some kind of drop */
 //            System.out.println("Player hit a drop!");
             if (object instanceof Mask) {
+                /* Masks increase the lives of the player by 1 */
                 increaseLives();
 //                System.out.println("Drop is a Mask!");
             } else if (object instanceof Virus) {
+                /* Viruses take away 1 health from the player */
                 decreaseLives();
 //                System.out.println("Drop is a Virus!");
             } else if (object instanceof Lockdown) {
+                /* Lockdown button hits all current enemies by 1 */
                 world.getEnemyCtrl().decreaseLivesBy(1);
-                System.out.println("Lockdown button hit!");
+//                System.out.println("Lockdown button hit!");
             }
+            /* All Drops are despawned after being hit by the player */
             world.getDropCtrl().despawn(((Drop)object));
         }
     }
 
     /**
-     * handles the pressed keys and starts an action if it's implemented
-     * @param keyCode pressed character keyCode
-     * @param key pressed character key
+     * Handles key presses and starts an action if it's implemented
+     * @param keyCode pressed key keyCode
+     * @param key pressed key
      */
     @Override
     public void keyPressed(int keyCode, char key) {
+        /* Esc always closes the window, so doesn't need to be included here */
+
         /* Enter starts the game */
         if (keyCode == world.ENTER) {
             if (world.getGameStarted()) {
@@ -171,18 +184,14 @@ public class Player extends Person {
                 world.resume();
             }
         }
-        /* Escape closes the game */
-        if (keyCode == world.ESC) {
-            world.exit();
-        }
 
         /* If the game hasn't started yet, controlling the player shouldn't be possible */
         if (!world.getGameStarted()) {
             return;
         }
 
-        float jumpSpeed = 16;
-        float directionalSpeed = 5;
+        final float jumpSpeed = 16;
+        final float directionalSpeed = 5;
 
         /* Direction: Up */
         if (key == 'w' && getDirection() != 0) {
@@ -192,11 +201,13 @@ public class Player extends Person {
         /* Direction: Left */
         if (key == 'a') {
             setDirectionSpeed(270, directionalSpeed);
+            /* Sets the direction the player sprite is looking */
             setCurrentFrameIndex(0);
         }
         /* Direction: Right */
         if (key == 'd') {
             setDirectionSpeed(90, directionalSpeed);
+            /* Sets the direction the player sprite is looking */
             setCurrentFrameIndex(1);
         }
     }

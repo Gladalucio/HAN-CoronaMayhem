@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Handles spawning and despawning of Drops.
+ * extends AlarmController
+ */
 public class DropController extends AlarmController {
     private final List<Drop> drops = new ArrayList<>();
 
@@ -19,6 +23,10 @@ public class DropController extends AlarmController {
 
     }
 
+    /**
+     * Returns a list of all current drops
+     * @return list of drops
+     */
     public List<Drop> getDrops() {
         return drops;
     }
@@ -47,6 +55,8 @@ public class DropController extends AlarmController {
             }
         }
 
+        /* If alarmName == spawnAlarmName, consider spawning more
+        * If not, skip this and continue to "startAlarm()" */
         if (alarmName.equals(spawnAlarmName)) {
             if (drops.size() >= maxSpawned) {
                 delayAlarm();
@@ -69,18 +79,29 @@ public class DropController extends AlarmController {
         startAlarm();
     }
 
+    /**
+     * Generates yes/no if a new Drop should be spawned
+     * @return boolean
+     */
     private boolean returnShouldSpawn() {
-//        final float spawnChance = 0.75f;
-        final float spawnChance = 0.01f; // For development only
+        final float spawnChance = 0.75f;
+//        final float spawnChance = 0.01f; // For development only
 
+        /* If Math.random()'s value is higher than the above spawnChance to the power of "spawnChancePower", return true
+        * Math.random() generates a value between 0 and 1
+        * At a score of 1, the return statement would translate to:
+        *   return Math.random() > Math.pow(0,75, 1) -> if Math.random() > 0,75, return true (25% chance)
+        * At a score of > 5, the return statement would translate to:
+        *   return Math.random() > Math.pow(0,75, 2) -> if Math.random() > 0,5625, return true (~45% chance)
+        * At a score of > 10, the return statement would translate to:
+        *   return Math.random() > Math.pow(0,75, 4) -> if Math.random() > 0,31640625, return true (~70% chance) */
         return Math.random() > Math.pow(spawnChance, returnSpawnChancePower());
     }
 
-    private void spawn(Drop drop) {
-        drop.spawn();
-        drops.add(drop);
-    }
-
+    /**
+     * Returns the power for "spawnChance". The higher the score, the higher the power thus the higher the spawn chance
+     * @return float spawnChancePower
+     */
     private float returnSpawnChancePower() {
         int score = world.getScoreboard().getScore();
         int chancePower = 1;
@@ -93,6 +114,19 @@ public class DropController extends AlarmController {
         return chancePower;
     }
 
+    /**
+     * Spawns a new drop and adds it to the drops list
+     * @param drop to be spawned
+     */
+    private void spawn(Drop drop) {
+        drop.spawn();
+        drops.add(drop);
+    }
+
+    /**
+     * Despawns an existing drop and removes it from the drops list
+     * @param drop to be removed
+     */
     public void despawn(Drop drop) {
         if (drops.contains(drop)) {
             drops.remove(drop);

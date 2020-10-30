@@ -3,6 +3,9 @@ package pedroroel.coronamayhem.objects;
 import nl.han.ica.oopg.objects.GameObject;
 import processing.core.PGraphics;
 
+/**
+ * Used in Dashboards and Menus to show text
+ */
 public class TextObject extends GameObject {
     private String text;
 

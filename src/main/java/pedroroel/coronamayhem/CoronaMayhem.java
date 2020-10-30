@@ -16,6 +16,9 @@ import processing.core.PApplet;
 
 // HANICA OOPG JAVADOC: https://hanica.github.io/oopg/
 
+/**
+ * Base game
+ */
 public class CoronaMayhem extends GameEngine {
     public final String baseAssetPath = "src/main/java/pedroroel/coronamayhem/assets/";
     private Player player = new Player(this, 1);
@@ -33,29 +36,50 @@ public class CoronaMayhem extends GameEngine {
     }
 
     //region Getters
+    /**
+     * Returns the Scoreboard instance
+     * @return Scoreboard
+     */
     public Scoreboard getScoreboard() {
         return scoreboard;
     }
 
+    /**
+     * Returns the Player instance
+     * @return Player
+     */
     public Player getPlayer() {
         return player;
     }
 
+    /**
+     * Returns the EnemyController instance
+     * @return EnemyController
+     */
     public EnemyController getEnemyCtrl() {
         return enemyCtrl;
     }
 
+    /**
+     * Returns the DropController instance
+     * @return DropController
+     */
     public DropController getDropCtrl() {
         return dropCtrl;
     }
 
+    /**
+     * Returns the current state of gameStarted
+     * @return gameStarted
+     */
     public boolean getGameStarted() {
         return gameStarted;
     }
     //endregion
 
     /**
-     * Provides the setup for the game.
+     * Provides the setup for the game
+     * Also re-run after reset
      */
     @Override
     public void setupGame() {
@@ -71,12 +95,16 @@ public class CoronaMayhem extends GameEngine {
         pause();
     }
 
+    /**
+     * Does collision checks every cycle
+     */
+    @Override
     public void update() {
         collisionCtrl.checkCollisions();
     }
 
     /**
-     * Pauses the game and shows the menu
+     * Pauses the game state and shows the menu
      */
     @Override
     public void pause() {
@@ -90,7 +118,7 @@ public class CoronaMayhem extends GameEngine {
     }
 
     /**
-     * Resumes the game and hides the menu if lives >= 0
+     * Resumes the game state and hides the menu if player lives >= 0
      * If not, the game is over and gets reset
      */
     @Override
@@ -110,7 +138,7 @@ public class CoronaMayhem extends GameEngine {
     public void reset() {
         deleteAllGameOBjects();
         enemyCtrl = new EnemyController(this);
-        getEnemyCtrl().getEnemies().clear();
+        enemyCtrl.getEnemies().clear();
         player = new Player(this, 1);
         scoreboard = new Scoreboard(this);
         scoreboard.reset();
@@ -118,7 +146,7 @@ public class CoronaMayhem extends GameEngine {
     }
 
     /**
-     * Creates a new view, without a viewport for this game specifically.
+     * Creates a new view without a viewport
      * @param screenWidth Game screen width
      * @param screenHeight Game screen height
      */
@@ -131,7 +159,7 @@ public class CoronaMayhem extends GameEngine {
     }
 
     /**
-     * TileMap is initialized, GameTiles put down.
+     * TileMap is initialized, GameTiles put down
      */
     private void initializeTileMap() {
         Sprite boardsSprite = new Sprite("src/main/java/pedroroel/coronamayhem/assets/images/tile.jpg");

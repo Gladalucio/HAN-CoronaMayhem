@@ -4,6 +4,9 @@ import nl.han.ica.oopg.alarm.Alarm;
 import nl.han.ica.oopg.alarm.IAlarmListener;
 import pedroroel.coronamayhem.CoronaMayhem;
 
+/**
+ * Used as a base for all Controllers implementing an IAlarmListener
+ */
 public abstract class AlarmController implements IAlarmListener {
     protected final CoronaMayhem world;
     protected final String delayAlarmName = "delay";
@@ -15,6 +18,9 @@ public abstract class AlarmController implements IAlarmListener {
         this.world = world;
     }
 
+    /**
+     * Starts an alarm which gets handled in "triggerAlarm"
+     */
     public abstract void startAlarm();
 
     /**
@@ -26,6 +32,10 @@ public abstract class AlarmController implements IAlarmListener {
         alarm.start();
     }
 
+    /**
+     * A set alarm gets triggered and is handled here
+     * @param alarmName the name of the triggered alarm
+     */
     @Override
     public abstract void triggerAlarm(String alarmName);
 }

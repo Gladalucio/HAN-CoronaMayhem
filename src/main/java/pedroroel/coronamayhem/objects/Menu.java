@@ -3,9 +3,12 @@ package pedroroel.coronamayhem.objects;
 import nl.han.ica.oopg.dashboard.Dashboard;
 import pedroroel.coronamayhem.CoronaMayhem;
 
+/**
+ * Opens and closes all menu screens (start/pause menu and death menu)
+ */
 public class Menu {
     private final CoronaMayhem world;
-    private final Dashboard menu = new Dashboard(350,160,500,500);
+    private final Dashboard menuScreen = new Dashboard(350,160,500,500);
     private final Dashboard deathScreen = new Dashboard(350,160,500,500);
 
     public Menu(CoronaMayhem world) {
@@ -13,20 +16,20 @@ public class Menu {
     }
 
     /**
-     * Shows the pause screen
+     * Creates and shows the start/pause screen
      */
     public void showPauseScreen() {
         TextObject playBtn = new TextObject("Press Enter to Play and Pause!");
         TextObject exitBtn = new TextObject("Press Escape to Exit!");
 
-        world.addDashboard(menu);
-        menu.setBackground(2,15,30);
-        menu.addGameObject(playBtn, -240,1);
-        menu.addGameObject(exitBtn, -240,150);
+        world.addDashboard(menuScreen);
+        menuScreen.setBackground(2,15,30);
+        menuScreen.addGameObject(playBtn, -240,1);
+        menuScreen.addGameObject(exitBtn, -240,150);
     }
 
     /**
-     * Shows the death screen
+     * Creates and shows the death screen
      */
     public void showDeathScreen() {
         TextObject deathText = new TextObject("You've Died!");
@@ -44,9 +47,9 @@ public class Menu {
      * Hides all menu instances
      */
     public void hide() {
-        if(world.getDashboards().contains(menu))
+        if(world.getDashboards().contains(menuScreen))
         {
-            world.deleteDashboard(menu);
+            world.deleteDashboard(menuScreen);
         }
         if(world.getDashboards().contains(deathScreen))
         {

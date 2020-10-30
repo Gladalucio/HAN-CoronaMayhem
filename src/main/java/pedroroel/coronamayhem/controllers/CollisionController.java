@@ -4,6 +4,9 @@ import nl.han.ica.oopg.objects.GameObject;
 import pedroroel.coronamayhem.CoronaMayhem;
 import pedroroel.coronamayhem.entities.*;
 
+/**
+ * Starts the collision checks and is used to check if collisions have occurred
+ */
 public class CollisionController {
     private final CoronaMayhem world;
 
@@ -11,6 +14,9 @@ public class CollisionController {
         this.world = world;
     }
 
+    /**
+     * Starts all collision checks
+     */
     public void checkCollisions() {
         world.getPlayer().checkCollisionOccurred(this);
         world.getEnemyCtrl().checkCollisionOccurred(this);
@@ -26,6 +32,12 @@ public class CollisionController {
         return distance >= 0 && distance < 2;
     }
 
+    /**
+     * Returns the distance between any Person and any GameObject
+     * @param person any Person instance
+     * @param object any GameObject instance
+     * @return float distance between the given parameters
+     */
     public float returnDistance(Person person, GameObject object) {
         return (float) object.getDistanceFrom(person);
     }

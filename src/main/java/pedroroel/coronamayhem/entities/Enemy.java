@@ -5,6 +5,10 @@ import nl.han.ica.oopg.objects.Sprite;
 import nl.han.ica.oopg.sound.Sound;
 import pedroroel.coronamayhem.CoronaMayhem;
 
+/**
+ * Patients are the enemies
+ * extends Person
+ */
 public class Enemy extends Person {
     private Color enemyColor;
     private SpawnSide spawnSide;
@@ -29,15 +33,16 @@ public class Enemy extends Person {
     }
 
     /**
-     * Currently used to check collision with walls.
-     * Allows enemies to go trough said walls and appear on the opposite side
+     * Used to allow enemies to go trough walls and appear on the opposite side
      */
     @Override
     public void update() {
-        if (getX() + getWidth() <= 0) { /* Hits left wall, reappears on the other side */
+        if (getX() + getWidth() <= 0) {
+            /* Hits left wall, reappears on the other side */
             setX(world.width - 100);
             checkForRespawn();
-        } else if (getX() >= world.width) { /* Hits right wall, reappears on the other side */
+        } else if (getX() >= world.width) {
+            /* Hits right wall, reappears on the other side */
             setX(35);
             checkForRespawn();
         }
@@ -60,7 +65,7 @@ public class Enemy extends Person {
     }
 
     /**
-     * Returns the offset the currentFrameOffset needs to show the correct sprite
+     * Returns the offset the currentFrameOffset needs to show the correct sprite (see the explanation for this method in Person.java)
      * EnemyColor and currentFrameIndexOffset are based on the lives the enemy has left
      */
     @Override
@@ -81,14 +86,19 @@ public class Enemy extends Person {
     @Override
     public void handleCollisionWith(GameObject object) {
         if (object instanceof Mask) {
+            /* Masks decrease the lives of an enemy by 1 */
 //            System.out.println("Enemy " + this.enemyColor + " hit a mask!");
             decreaseLives();
         } else if (object instanceof Virus) {
+            /* Viruses make the patient more sick, so increases lives by 1 */
 //            System.out.println("Enemy " + this.enemyColor + " hit a virus!");
             increaseLives();
         }
     }
 
+    /**
+     * Sets a spawn side for the newly created enemies
+     */
     private void determineSpawnSide() {
         spawnSide = Math.random() < 0.5 ? SpawnSide.Left : SpawnSide.Right;
     }
@@ -118,6 +128,7 @@ public class Enemy extends Person {
             entitySpeed = (float) -(entitySpeed + Math.random() / 2);
             setX(world.width - 100);
         } else {
+            /* If no spawnside was set, executes "determineSpawnSide" and returns to this function */
             determineSpawnSide();
             spawn();
             return;
@@ -125,9 +136,9 @@ public class Enemy extends Person {
 
         playDoorSound();
         setxSpeed(entitySpeed);
+        /* Sets Y to the top floor */
         setY(19);
         world.addGameObject(this);
-        setCurrentFrameIndex(getCurrentFrameIndex());
     }
 
     /**
@@ -142,11 +153,17 @@ public class Enemy extends Person {
         }
     }
 
+    /**
+     * Plays the "door" sound effect
+     */
     public void playDoorSound() {
         doorSound.rewind();
         doorSound.play();
     }
 
+    /**
+     * Plays the "healed" sound effect
+     */
     public void playHealedSound() {
         healedSound.rewind();
         healedSound.play();
