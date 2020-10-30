@@ -54,6 +54,7 @@ public class Enemy extends Person {
     public void decreaseLives() {
         super.decreaseLives();
         playHealedSound();
+        world.getScoreboard().increase();
         /* Removing the enemy after being killed was moved to "checkCollision" in the EnemyController
         * This because of the fact I couldn't solve the ConcurrentModificationException any other way */
     }
@@ -80,10 +81,10 @@ public class Enemy extends Person {
     @Override
     public void handleCollisionWith(GameObject object) {
         if (object instanceof Mask) {
-            System.out.println("Enemy " + this.enemyColor + " hit a mask!");
+//            System.out.println("Enemy " + this.enemyColor + " hit a mask!");
             decreaseLives();
         } else if (object instanceof Virus) {
-            System.out.println("Enemy " + this.enemyColor + " hit a virus!");
+//            System.out.println("Enemy " + this.enemyColor + " hit a virus!");
             increaseLives();
         }
     }

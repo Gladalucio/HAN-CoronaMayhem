@@ -14,7 +14,9 @@ public class DropController extends AlarmController {
     public DropController(CoronaMayhem world) {
         super(world);
         spawnDelay = 10;
+//        spawnDelay = 5; // For development only
         maxSpawned = 3;
+
     }
 
     public List<Drop> getDrops() {
@@ -58,14 +60,18 @@ public class DropController extends AlarmController {
             if (returnShouldSpawn()) {
                 spawn(new Virus(world));
             }
+
+            if (returnShouldSpawn()) {
+                spawn(new Lockdown(world));
+            }
         }
 
         startAlarm();
     }
 
     private boolean returnShouldSpawn() {
-        final float spawnChance = 0.75f;
-//        final float spawnChance = 0.01f; // For development only
+//        final float spawnChance = 0.75f;
+        final float spawnChance = 0.01f; // For development only
 
         return Math.random() > Math.pow(spawnChance, returnSpawnChancePower());
     }
@@ -80,7 +86,7 @@ public class DropController extends AlarmController {
         int chancePower = 1;
 
         if (score > 10) {
-            chancePower = 3;
+            chancePower = 4;
         } else if (score > 5) {
             chancePower = 2;
         }

@@ -16,7 +16,7 @@ public abstract class Drop extends SpriteObject {
 
     public void spawn() {
         setPredeterminedCoords();
-        System.out.println("Drop coords: " + getX() + ", " + getY());
+//        System.out.println("Drop coords: " + getX() + ", " + getY());
         world.addGameObject(this);
     }
 

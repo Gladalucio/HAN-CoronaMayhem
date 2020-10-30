@@ -49,7 +49,7 @@ public class EnemyController extends AlarmController {
         /* Because enemies will be reduced in health thus removed from the list, the regular for-loop gives a ConcurrentModificationException */
         for (Enemy enemy : enemies) {
             final float maxDist = 10000;
-            final float minDist = 5;
+            final float minDist = 50;
             float closestDist = maxDist;
             boolean collisionHappened = false;
             boolean enemyIsColliding = enemy.getIsColliding();
@@ -59,20 +59,17 @@ public class EnemyController extends AlarmController {
                 if (dist < closestDist) {
                     closestDist = dist;
                 }
-
                 boolean collided = collisionCtrl.hasCollisionOccurred(enemy, drop);
 
                 if (collided && !enemyIsColliding) {
                     enemy.handleCollisionWith(drop);
-                    System.out.println("Collision!");
                     collisionHappened = true;
                     enemy.setIsColliding(true);
-
                 }
             }
 
             if (!collisionHappened && enemyIsColliding && closestDist > minDist && closestDist != maxDist) {
-                System.out.println("Collision reset!");
+//                System.out.println("Collision reset!");
                 enemy.setIsColliding(false);
             }
         }
@@ -136,9 +133,17 @@ public class EnemyController extends AlarmController {
         while (deadIter.hasNext()) {
             Enemy enemy = deadIter.next();
             if (enemy.getLives() < 0) {
-                System.out.println("Removed dead enemy!");
+//                System.out.println("Removed dead enemy!");
                 deadIter.remove();
                 removeEnemy(enemy);
+            }
+        }
+    }
+
+    public void decreaseLivesBy(int amount) {
+        for (int i = 0; i < amount; i++) {
+            for (Enemy enemy: enemies) {
+                enemy.decreaseLives();
             }
         }
     }

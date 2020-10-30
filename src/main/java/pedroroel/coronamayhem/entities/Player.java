@@ -81,7 +81,7 @@ public class Player extends Person {
     public void checkCollisionOccurred(CollisionController collisionCtrl) {
         /* Checks if no more collisions are happening. If not, resets "isColliding" */
         final float maxDist = 10000;
-        final float minDist = 5;
+        final float minDist = 20;
         float closestDist = maxDist;
         boolean collisionHappened = false;
 
@@ -130,15 +130,14 @@ public class Player extends Person {
     public void handleCollisionWith(GameObject object) {
         if (object instanceof Enemy) {
             /* Hit an enemy */
-//            System.out.println("Player hit an enemy!");
             if (this.getAngleFrom(object) >= 160 && this.getAngleFrom(object) <= 220) {
 //                System.out.println("Healed!");
                 ((Enemy)object).decreaseLives();
-                world.getScoreboard().increase();
+//                world.getScoreboard().increase();
             } else {
 //                System.out.println("Infected!");
                 decreaseLives();
-                world.getScoreboard().decrease();
+//                world.getScoreboard().decrease();
             }
         } else if (object instanceof Drop) {
             /* Hit some kind of drop */
@@ -149,8 +148,10 @@ public class Player extends Person {
             } else if (object instanceof Virus) {
                 decreaseLives();
 //                System.out.println("Drop is a Virus!");
+            } else if (object instanceof Lockdown) {
+                world.getEnemyCtrl().decreaseLivesBy(1);
+                System.out.println("Lockdown button hit!");
             }
-            System.out.println("Despawned!");
             world.getDropCtrl().despawn(((Drop)object));
         }
     }

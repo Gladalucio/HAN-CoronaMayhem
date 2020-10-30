@@ -10,7 +10,6 @@ import pedroroel.coronamayhem.controllers.DropController;
 import pedroroel.coronamayhem.entities.Player;
 import pedroroel.coronamayhem.controllers.EnemyController;
 import pedroroel.coronamayhem.objects.GameTile;
-import pedroroel.coronamayhem.objects.LockDown;
 import pedroroel.coronamayhem.objects.Menu;
 import pedroroel.coronamayhem.objects.Scoreboard;
 import processing.core.PApplet;
@@ -24,7 +23,6 @@ public class CoronaMayhem extends GameEngine {
     private DropController dropCtrl = new DropController(this);
     private CollisionController collisionCtrl = new CollisionController(this);
     private Scoreboard scoreboard = new Scoreboard(this);
-    private LockDown lockDownButton = new LockDown(this);
     private final Menu menu = new Menu(this);
     private boolean gameStarted = true;
 
@@ -71,7 +69,6 @@ public class CoronaMayhem extends GameEngine {
         dropCtrl.startAlarm();
         scoreboard.show();
         pause();
-        lockDownButton.showLargeButton();
     }
 
     public void update() {
@@ -111,7 +108,6 @@ public class CoronaMayhem extends GameEngine {
      * Also re-runs setupGame();
      */
     public void reset() {
-        System.out.println("Reset game!");
         deleteAllGameOBjects();
         enemyCtrl = new EnemyController(this);
         getEnemyCtrl().getEnemies().clear();
