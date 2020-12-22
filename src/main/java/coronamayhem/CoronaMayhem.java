@@ -17,7 +17,7 @@ import processing.core.PApplet;
 // HANICA OOPG JAVADOC: https://hanica.github.io/oopg/
 
 public class CoronaMayhem extends GameEngine {
-    public final String baseAssetPath = "src/coronamayhem/assets/";
+    public final String baseAssetPath = "src/main/java/coronamayhem/assets/";
     private Player player = new Player(this, 1);
     private EnemyController enemyCtrl = new EnemyController(this);
     private final DropController dropCtrl = new DropController(this);
@@ -159,7 +159,7 @@ public class CoronaMayhem extends GameEngine {
      * TileMap is initialized, GameTiles put down
      */
     private void initializeTileMap() {
-        Sprite boardsSprite = new Sprite("src/coronamayhem/assets/images/tile.jpg");
+        Sprite boardsSprite = new Sprite("src/main/java/coronamayhem/assets/images/tile.jpg");
         TileType<GameTile> boardTileType = new TileType<>(GameTile.class, boardsSprite);
 
         TileType[] tileTypes = {boardTileType};
